@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Smart Personal Finance | ระบบจัดการการเงินส่วนบุคคล",
+  title: "VECTRA Finance | ระบบจัดการการเงินส่วนบุคคลอัจฉริยะ",
   description:
-    "บันทึกรายรับ-รายจ่าย ตั้งงบประมาณพร้อมแจ้งเตือน และวิเคราะห์สุขภาพการเงินในหน้าเดียว (Next.js + Supabase)",
+    "VECTRA Finance — แอปวางแผนการเงินส่วนบุคคล บันทึกรายรับ-รายจ่าย ตั้งงบประมาณพร้อมแจ้งเตือน และวิเคราะห์กระแสเงินสดในหน้าเดียว",
 };
 
 export const viewport: Viewport = {

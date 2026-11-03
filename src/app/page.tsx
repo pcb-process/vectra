@@ -12,6 +12,7 @@ import {
   TransactionType,
 } from "@/types/finance";
 import { CategoryIcon } from "@/components/CategoryIcon";
+import { BrandLogo } from "@/components/BrandLogo";
 import { TransactionModal } from "@/components/TransactionModal";
 import { BudgetModal } from "@/components/BudgetModal";
 import { AuthModal } from "@/components/AuthModal";
@@ -548,16 +549,19 @@ export default function SmartFinanceOnePageApp() {
         <header className="matrix-card p-3 sm:px-4 sm:py-3 space-y-2.5 sm:space-y-0 sm:flex sm:items-center sm:justify-between gap-3">
           {/* Top Row on Mobile: Brand + Utility Icons (Auth & Refresh) */}
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-9 h-9 bg-[#00ff41]/15 border border-[#00ff41] flex items-center justify-center shrink-0">
-                <Wallet className="w-4 h-4 text-[#00ff41]" />
-              </div>
+            <div className="flex items-center gap-3 min-w-0">
+              <BrandLogo size="md" />
               <div className="min-w-0">
-                <h1 className="text-sm sm:text-base font-bold matrix-text-glow-lg truncate">
-                  Smart Personal Finance
-                </h1>
-                <p className="text-[11px] text-[#80ff9e]/75">
-                  รอบเดือน {formatThaiMonthYear(selectedMonth)}
+                <div className="flex items-center gap-2">
+                  <h1 className="text-base sm:text-lg font-black tracking-[0.16em] matrix-text-glow-lg truncate">
+                    VECTRA
+                  </h1>
+                  <span className="px-1.5 py-0.5 text-[9px] font-extrabold tracking-widest uppercase bg-[#00ffd5]/15 text-[#00ffd5] border border-[#00ffd5]/50 shrink-0">
+                    FINANCE
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#80ff9e]/75 truncate">
+                  พอร์ตการเงินส่วนบุคคล • {formatThaiMonthYear(selectedMonth)}
                 </p>
               </div>
             </div>

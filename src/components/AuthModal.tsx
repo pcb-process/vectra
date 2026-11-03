@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Mail, Lock, Cloud, Sparkles, AlertCircle, CheckCircle2 } from "lucide-react";
+import { X, Mail, Lock, Sparkles, AlertCircle, CheckCircle2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { BrandLogo } from "./BrandLogo";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -71,12 +72,10 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
         </button>
 
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-10 h-10 bg-[#00ff41]/15 border border-[#00ff41] flex items-center justify-center text-[#00ff41]">
-            <Cloud className="w-5 h-5" />
-          </div>
+          <BrandLogo size="md" />
           <div>
             <h2 className="text-base font-extrabold matrix-text-glow-lg">
-              {mode === "login" ? "เข้าสู่ระบบ (Supabase Cloud)" : "สมัครสมาชิกใหม่"}
+              {mode === "login" ? "เข้าสู่ระบบ VECTRA Cloud" : "สร้างบัญชี VECTRA ใหม่"}
             </h2>
             <p className="text-xs text-[#80ff9e]/80">
               ซิงค์ข้อมูลรายรับ-รายจ่ายและงบประมาณข้ามอุปกรณ์อย่างปลอดภัย
