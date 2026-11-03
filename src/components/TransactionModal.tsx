@@ -1,7 +1,18 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { X, PlusCircle, Save, Wallet } from "lucide-react";
+import {
+  X,
+  PlusCircle,
+  Save,
+  Wallet,
+  ArrowDownCircle,
+  ArrowUpCircle,
+  Banknote,
+  Layers,
+  Calendar,
+  FileText,
+} from "lucide-react";
 import { Category, Transaction, TransactionType } from "@/types/finance";
 import { CategoryIcon } from "./CategoryIcon";
 
@@ -114,31 +125,34 @@ export function TransactionModal({
             <button
               type="button"
               onClick={() => handleTypeChange("expense")}
-              className={`py-2 text-xs font-extrabold transition-all cursor-pointer ${
+              className={`py-2 text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 type === "expense"
                   ? "bg-[#ff0055] text-white"
                   : "text-[#80ff9e]/60 hover:text-[#00ff41]"
               }`}
             >
-              รายจ่าย (Expense)
+              <ArrowDownCircle className="w-4 h-4" />
+              <span>รายจ่าย (Expense)</span>
             </button>
             <button
               type="button"
               onClick={() => handleTypeChange("income")}
-              className={`py-2 text-xs font-extrabold transition-all cursor-pointer ${
+              className={`py-2 text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 type === "income"
                   ? "bg-[#00ff41] text-black"
                   : "text-[#80ff9e]/60 hover:text-[#00ff41]"
               }`}
             >
-              รายรับ (Income)
+              <ArrowUpCircle className="w-4 h-4" />
+              <span>รายรับ (Income)</span>
             </button>
           </div>
 
           {/* Amount Input */}
           <div>
-            <label className="block text-xs font-semibold text-[#80ff9e] mb-1.5">
-              จำนวนเงิน (บาท) *
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-[#80ff9e] mb-1.5">
+              <Banknote className="w-3.5 h-3.5 text-[#00ff41]" />
+              <span>จำนวนเงิน (บาท) *</span>
             </label>
             <input
               type="number"
@@ -154,8 +168,9 @@ export function TransactionModal({
 
           {/* Category Grid */}
           <div>
-            <label className="block text-xs font-semibold text-[#80ff9e] mb-2">
-              เลือกหมวดหมู่ *
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-[#80ff9e] mb-2">
+              <Layers className="w-3.5 h-3.5 text-[#00ff41]" />
+              <span>เลือกหมวดหมู่ *</span>
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {filteredCategories.map((cat) => {
@@ -193,8 +208,9 @@ export function TransactionModal({
           {/* Date & Note */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-[#80ff9e] mb-1.5">
-                วันที่ทำรายการ *
+              <label className="flex items-center gap-1.5 text-xs font-semibold text-[#80ff9e] mb-1.5">
+                <Calendar className="w-3.5 h-3.5 text-[#00ff41]" />
+                <span>วันที่ทำรายการ *</span>
               </label>
               <input
                 type="date"
@@ -206,8 +222,9 @@ export function TransactionModal({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#80ff9e] mb-1.5">
-                บันทึกช่วยจำ (Note)
+              <label className="flex items-center gap-1.5 text-xs font-semibold text-[#80ff9e] mb-1.5">
+                <FileText className="w-3.5 h-3.5 text-[#00ff41]" />
+                <span>บันทึกช่วยจำ (Note)</span>
               </label>
               <input
                 type="text"
