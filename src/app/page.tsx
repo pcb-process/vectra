@@ -181,7 +181,6 @@ export default function MatrixOnePageFinanceApp() {
         .order("id", { ascending: true });
 
       if (catData && catData.length > 0) {
-        // Override with Matrix neon palette for visual punch
         const neonMap = new Map(DEFAULT_CATEGORIES.map((c) => [c.name, c.color]));
         const enhanced = (catData as Category[]).map((c) => ({
           ...c,
@@ -595,24 +594,24 @@ export default function MatrixOnePageFinanceApp() {
       <MatrixRainBackground />
 
       {/* Main 1-Page Container optimized for iPhone (Desktop/Mobile viewport) & Desktop */}
-      <div className="relative z-10 max-w-[1440px] mx-auto px-2.5 sm:px-5 pt-3 space-y-4">
+      <div className="relative z-10 max-w-[1440px] mx-auto px-2.5 sm:px-5 pt-3 space-y-3.5">
         {/* ==================== TOP MATRIX HUD COMMAND BAR ==================== */}
-        <header className="matrix-card-intense rounded-2xl px-3.5 py-3 flex flex-wrap items-center justify-between gap-2.5">
+        <header className="matrix-card-intense px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
           {/* Brand Title */}
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-[#00ff41]/20 border border-[#00ff41] flex items-center justify-center shadow-[0_0_20px_#00ff41]">
-              <Terminal className="w-5 h-5 text-[#00ff41] drop-shadow-[0_0_8px_#00ff41]" />
+            <div className="w-9 h-9 bg-[#00ff41]/15 border border-[#00ff41] flex items-center justify-center shadow-[0_0_8px_rgba(0,255,65,0.4)]">
+              <Terminal className="w-5 h-5 text-[#00ff41]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-sm sm:text-lg font-black tracking-wider matrix-text-glow-lg">
+                <h1 className="text-sm sm:text-base font-black tracking-wider matrix-text-glow-lg">
                   MATRIX // FINANCE_OS
                 </h1>
-                <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#00ff41]/20 text-[#00ff41] border border-[#00ff41]/60 shadow-[0_0_12px_rgba(0,255,65,0.5)]">
+                <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-extrabold bg-[#00ff41]/15 text-[#00ff41] border border-[#00ff41]/60">
                   1-PAGE HUD
                 </span>
               </div>
-              <p className="text-[11px] text-[#80ff9e]/80">
+              <p className="text-[11px] text-[#80ff9e]/75">
                 ระบบบัญชาการการเงินส่วนบุคคล • {formatThaiMonthYear(selectedMonth)}
               </p>
             </div>
@@ -621,13 +620,13 @@ export default function MatrixOnePageFinanceApp() {
           {/* Controls: Month Picker + Cloud Status + Modal Trigger */}
           <div className="flex flex-wrap items-center gap-2">
             {/* Month Selector */}
-            <div className="flex items-center gap-1.5 matrix-input px-2.5 py-1.5 rounded-xl">
-              <Calendar className="w-3.5 h-3.5 text-[#00ff41] drop-shadow-[0_0_6px_#00ff41]" />
+            <div className="flex items-center gap-1.5 matrix-input px-2.5 py-1">
+              <Calendar className="w-3.5 h-3.5 text-[#00ff41] shrink-0" />
               <input
                 type="month"
                 value={selectedMonth}
                 onChange={(e) => setSelectedMonth(e.target.value)}
-                className="bg-transparent text-xs font-extrabold text-[#e2ffe9] focus:outline-none"
+                className="bg-transparent text-xs font-extrabold text-[#e2ffe9] focus:outline-none min-w-0"
               />
             </div>
 
@@ -635,22 +634,22 @@ export default function MatrixOnePageFinanceApp() {
             {isDemoMode ? (
               <button
                 onClick={() => setIsAuthModalOpen(true)}
-                className="matrix-btn-outline px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                className="matrix-btn-outline px-2.5 py-1.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
               >
                 <Sparkles className="w-3.5 h-3.5 text-[#00ff41]" />
-                <span className="hidden sm:inline">SIMULATION_MODE</span>
+                <span className="hidden sm:inline">SIMULATION</span>
                 <LogIn className="w-3.5 h-3.5" />
               </button>
             ) : (
               <div className="flex items-center gap-1.5">
-                <span className="px-2.5 py-1.5 rounded-xl bg-[#00ff41]/15 border border-[#00ff41]/60 text-[11px] font-bold text-[#00ff41] shadow-[0_0_12px_rgba(0,255,65,0.35)] flex items-center gap-1.5 max-w-[160px] truncate">
+                <span className="px-2.5 py-1.5 bg-[#00ff41]/10 border border-[#00ff41]/50 text-[11px] font-bold text-[#00ff41] flex items-center gap-1.5 max-w-[150px] truncate">
                   <Cloud className="w-3.5 h-3.5 shrink-0" />
                   <span className="truncate">{userEmail}</span>
                 </span>
                 {transactions.length === 0 && (
                   <button
                     onClick={handleSeedCloudSampleData}
-                    className="matrix-btn-outline px-2.5 py-1.5 rounded-xl text-[11px] font-bold flex items-center gap-1 cursor-pointer"
+                    className="matrix-btn-outline px-2.5 py-1.5 text-[11px] font-bold flex items-center gap-1 cursor-pointer"
                     title="นำเข้าข้อมูลตัวอย่างเข้า Cloud"
                   >
                     <Database className="w-3.5 h-3.5" />
@@ -660,7 +659,7 @@ export default function MatrixOnePageFinanceApp() {
                 <button
                   onClick={handleSignOut}
                   title="ออกจากระบบ"
-                  className="p-1.5 rounded-xl bg-[#ff0055]/15 border border-[#ff0055]/50 text-[#ff2a6d] hover:bg-[#ff0055]/30 cursor-pointer"
+                  className="p-1.5 bg-[#ff0055]/15 border border-[#ff0055]/50 text-[#ff2a6d] hover:bg-[#ff0055]/30 cursor-pointer"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                 </button>
@@ -671,7 +670,7 @@ export default function MatrixOnePageFinanceApp() {
             <button
               onClick={loadFinanceData}
               title="รีเฟรชข้อมูล"
-              className="p-2 rounded-xl matrix-btn-outline cursor-pointer"
+              className="p-1.5 matrix-btn-outline cursor-pointer"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loadingData ? "animate-spin" : ""}`} />
             </button>
@@ -682,7 +681,7 @@ export default function MatrixOnePageFinanceApp() {
                 setEditingTx(null);
                 setIsTxModalOpen(true);
               }}
-              className="matrix-btn-glow px-3.5 py-1.5 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer"
+              className="matrix-btn-glow px-3 py-1.5 text-xs flex items-center gap-1 cursor-pointer"
             >
               <Plus className="w-4 h-4 stroke-[3]" />
               <span>+ จดรายการ</span>
@@ -690,33 +689,33 @@ export default function MatrixOnePageFinanceApp() {
           </div>
         </header>
 
-        {/* ==================== ROW 1: 4 NEON MATRIX KPI PODS ==================== */}
+        {/* ==================== ROW 1: 4 ANGULAR MATRIX KPI PODS ==================== */}
         <section className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {/* Pod 1: Income */}
-          <div className="matrix-card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden">
-            <div className="flex items-center justify-between mb-1.5">
+          <div className="matrix-card p-3.5 relative overflow-hidden">
+            <div className="flex items-center justify-between mb-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#80ff9e]/80">
                 INFLOW // รายรับรวม
               </span>
-              <div className="w-8 h-8 rounded-lg bg-[#00ff41]/20 border border-[#00ff41]/60 flex items-center justify-center text-[#00ff41] shadow-[0_0_14px_#00ff41]">
+              <div className="w-7 h-7 bg-[#00ff41]/15 border border-[#00ff41]/60 flex items-center justify-center text-[#00ff41]">
                 <TrendingUp className="w-4 h-4" />
               </div>
             </div>
             <div className="text-lg sm:text-2xl font-black matrix-text-glow-lg truncate">
               +{formatCurrency(totalIncome)}
             </div>
-            <div className="mt-1 text-[11px] text-[#00ff41] font-semibold">
-              {transactions.filter((t) => t.type === "income").length} รายการรับในระบบ
+            <div className="mt-1 text-[11px] text-[#00ff41]/90 font-semibold">
+              {transactions.filter((t) => t.type === "income").length} รายการรับในเดือนนี้
             </div>
           </div>
 
           {/* Pod 2: Expense */}
-          <div className="matrix-card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden">
-            <div className="flex items-center justify-between mb-1.5">
+          <div className="matrix-card p-3.5 relative overflow-hidden">
+            <div className="flex items-center justify-between mb-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#80ff9e]/80">
                 OUTFLOW // รายจ่ายรวม
               </span>
-              <div className="w-8 h-8 rounded-lg bg-[#ff0055]/20 border border-[#ff0055]/70 flex items-center justify-center text-[#ff2a6d] shadow-[0_0_14px_#ff0055]">
+              <div className="w-7 h-7 bg-[#ff0055]/15 border border-[#ff0055]/60 flex items-center justify-center text-[#ff2a6d]">
                 <TrendingDown className="w-4 h-4" />
               </div>
             </div>
@@ -724,17 +723,17 @@ export default function MatrixOnePageFinanceApp() {
               -{formatCurrency(totalExpense)}
             </div>
             <div className="mt-1 text-[11px] text-[#ff80ab] font-semibold">
-              {transactions.filter((t) => t.type === "expense").length} รายการจ่ายในระบบ
+              {transactions.filter((t) => t.type === "expense").length} รายการจ่ายในเดือนนี้
             </div>
           </div>
 
           {/* Pod 3: Net Cashflow */}
-          <div className="matrix-card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden">
-            <div className="flex items-center justify-between mb-1.5">
+          <div className="matrix-card p-3.5 relative overflow-hidden">
+            <div className="flex items-center justify-between mb-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#80ff9e]/80">
                 NET_PULSE // คงเหลือสุทธิ
               </span>
-              <div className="w-8 h-8 rounded-lg bg-[#00ffd5]/20 border border-[#00ffd5]/70 flex items-center justify-center text-[#00ffd5] shadow-[0_0_14px_#00ffd5]">
+              <div className="w-7 h-7 bg-[#00ffd5]/15 border border-[#00ffd5]/60 flex items-center justify-center text-[#00ffd5]">
                 <Wallet className="w-4 h-4" />
               </div>
             </div>
@@ -746,25 +745,25 @@ export default function MatrixOnePageFinanceApp() {
               {netBalance >= 0 ? "+" : ""}
               {formatCurrency(netBalance)}
             </div>
-            <div className="mt-1 text-[11px] text-[#80ff9e]/80 font-semibold">
+            <div className="mt-1 text-[11px] text-[#80ff9e]/75 font-semibold">
               {netBalance >= 0 ? "STATUS: POSITIVE_FLOW" : "STATUS: DEFICIT_ALERT"}
             </div>
           </div>
 
           {/* Pod 4: Savings Rate */}
-          <div className="matrix-card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden">
-            <div className="flex items-center justify-between mb-1.5">
+          <div className="matrix-card p-3.5 relative overflow-hidden">
+            <div className="flex items-center justify-between mb-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#80ff9e]/80">
                 RESERVE // อัตราการออม
               </span>
-              <div className="w-8 h-8 rounded-lg bg-[#39ff14]/20 border border-[#39ff14]/70 flex items-center justify-center text-[#39ff14] shadow-[0_0_14px_#39ff14]">
+              <div className="w-7 h-7 bg-[#39ff14]/15 border border-[#39ff14]/60 flex items-center justify-center text-[#39ff14]">
                 <PiggyBank className="w-4 h-4" />
               </div>
             </div>
             <div className="text-lg sm:text-2xl font-black matrix-text-glow-lg">
               {savingsRate.toFixed(1)}%
             </div>
-            <div className="mt-1 text-[11px] text-[#00ff41] font-semibold">
+            <div className="mt-1 text-[11px] text-[#00ff41]/90 font-semibold">
               {savingsRate >= 20 ? "OPTIMAL (≥ 20% TARGET)" : "RECOMMENDED: ≥ 20%"}
             </div>
           </div>
@@ -777,16 +776,16 @@ export default function MatrixOnePageFinanceApp() {
             onSubmit={handleQuickAddSubmit}
             className={`${
               budgetAlerts.length > 0 ? "lg:col-span-7" : "lg:col-span-12"
-            } matrix-card-intense rounded-2xl p-3.5 sm:p-4`}
+            } matrix-card-intense p-3.5`}
           >
             <div className="flex items-center justify-between mb-2.5">
               <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-[#00ff41] drop-shadow-[0_0_8px_#00ff41]" />
+                <Zap className="w-4 h-4 text-[#00ff41]" />
                 <span className="text-xs font-black tracking-wider matrix-text-glow">
                   QUICK_INJECT // บันทึกรายการด่วนในหน้าเดียว
                 </span>
               </div>
-              <div className="flex items-center gap-1 bg-black/80 border border-[#00ff41]/40 rounded-lg p-0.5">
+              <div className="flex items-center gap-1 bg-black/90 border border-[#00ff41]/40 p-0.5">
                 <button
                   type="button"
                   onClick={() => {
@@ -794,9 +793,9 @@ export default function MatrixOnePageFinanceApp() {
                     const firstExp = categories.find((c) => c.type === "expense");
                     if (firstExp) setQuickCategoryId(firstExp.id);
                   }}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-extrabold transition-all cursor-pointer ${
+                  className={`px-2.5 py-1 text-[11px] font-extrabold transition-all cursor-pointer ${
                     quickType === "expense"
-                      ? "bg-[#ff0055] text-white shadow-[0_0_12px_#ff0055]"
+                      ? "bg-[#ff0055] text-white"
                       : "text-[#80ff9e]/70 hover:text-white"
                   }`}
                 >
@@ -809,9 +808,9 @@ export default function MatrixOnePageFinanceApp() {
                     const firstInc = categories.find((c) => c.type === "income");
                     if (firstInc) setQuickCategoryId(firstInc.id);
                   }}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-extrabold transition-all cursor-pointer ${
+                  className={`px-2.5 py-1 text-[11px] font-extrabold transition-all cursor-pointer ${
                     quickType === "income"
-                      ? "bg-[#00ff41] text-black shadow-[0_0_12px_#00ff41]"
+                      ? "bg-[#00ff41] text-black"
                       : "text-[#80ff9e]/70 hover:text-white"
                   }`}
                 >
@@ -821,11 +820,11 @@ export default function MatrixOnePageFinanceApp() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-12 gap-2">
-              <div className="col-span-1 sm:col-span-3">
+              <div className="col-span-2 sm:col-span-3 min-w-0">
                 <select
                   value={quickCategoryId}
                   onChange={(e) => setQuickCategoryId(Number(e.target.value))}
-                  className="w-full px-2.5 py-2 matrix-input rounded-xl text-xs font-bold"
+                  className="w-full px-2.5 py-2 matrix-select text-xs font-bold"
                 >
                   {quickFilteredCategories.map((c) => (
                     <option key={c.id} value={c.id} className="bg-[#010802] text-[#00ff41]">
@@ -835,7 +834,7 @@ export default function MatrixOnePageFinanceApp() {
                 </select>
               </div>
 
-              <div className="col-span-1 sm:col-span-2">
+              <div className="col-span-1 sm:col-span-2 min-w-0">
                 <input
                   type="number"
                   step="any"
@@ -844,35 +843,35 @@ export default function MatrixOnePageFinanceApp() {
                   value={quickAmount}
                   onChange={(e) => setQuickAmount(e.target.value)}
                   placeholder="จำนวนเงิน (฿)"
-                  className="w-full px-2.5 py-2 matrix-input rounded-xl text-xs font-extrabold"
+                  className="w-full px-2.5 py-2 matrix-input text-xs font-extrabold"
                 />
               </div>
 
-              <div className="col-span-1 sm:col-span-3">
+              <div className="col-span-1 sm:col-span-3 min-w-0">
                 <input
                   type="text"
                   value={quickNote}
                   onChange={(e) => setQuickNote(e.target.value)}
                   placeholder="บันทึกช่วยจำ..."
-                  className="w-full px-2.5 py-2 matrix-input rounded-xl text-xs"
+                  className="w-full px-2.5 py-2 matrix-input text-xs"
                 />
               </div>
 
-              <div className="col-span-1 sm:col-span-2">
+              <div className="col-span-1 sm:col-span-2 min-w-0">
                 <input
                   type="date"
                   required
                   value={quickDate}
                   onChange={(e) => setQuickDate(e.target.value)}
-                  className="w-full px-2 py-2 matrix-input rounded-xl text-xs"
+                  className="w-full px-2 py-2 matrix-input text-xs"
                 />
               </div>
 
-              <div className="col-span-2 sm:col-span-2">
+              <div className="col-span-1 sm:col-span-2">
                 <button
                   type="submit"
                   disabled={quickSaving}
-                  className="w-full h-full py-2 px-3 rounded-xl matrix-btn-glow text-xs flex items-center justify-center gap-1 cursor-pointer"
+                  className="w-full h-full py-2 px-3 matrix-btn-glow text-xs flex items-center justify-center gap-1 cursor-pointer"
                 >
                   <Plus className="w-4 h-4 stroke-[3]" />
                   <span>บันทึก</span>
@@ -883,10 +882,10 @@ export default function MatrixOnePageFinanceApp() {
 
           {/* Active Budget Alert Strip */}
           {budgetAlerts.length > 0 && (
-            <div className="lg:col-span-5 matrix-card-warning rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between">
+            <div className="lg:col-span-5 matrix-card-warning p-3.5 flex flex-col justify-between">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-[#ffc400] drop-shadow-[0_0_8px_#ffc400]" />
+                  <AlertTriangle className="w-4 h-4 text-[#ffc400]" />
                   <span className="text-xs font-black matrix-text-warning-glow">
                     WARNING // แจ้งเตือนงบประมาณ ({budgetAlerts.length} หมวดหมู่)
                   </span>
@@ -896,10 +895,10 @@ export default function MatrixOnePageFinanceApp() {
                 {budgetAlerts.slice(0, 2).map((alert) => (
                   <div
                     key={alert.id}
-                    className={`px-3 py-2 rounded-xl border ${
+                    className={`px-3 py-2 border ${
                       alert.status === "over"
-                        ? "bg-[#ff0055]/15 border-[#ff0055] shadow-[0_0_12px_rgba(255,0,85,0.4)]"
-                        : "bg-[#ffc400]/10 border-[#ffc400]/70 shadow-[0_0_12px_rgba(255,196,0,0.3)]"
+                        ? "bg-[#ff0055]/15 border-[#ff0055]/80"
+                        : "bg-[#ffc400]/10 border-[#ffc400]/60"
                     }`}
                   >
                     <div className="flex items-center justify-between text-[11px] font-bold">
@@ -927,7 +926,7 @@ export default function MatrixOnePageFinanceApp() {
         {/* ==================== ROW 3: ANALYTICS CHARTS HUD (SIDE-BY-SIDE) ==================== */}
         <section className="grid grid-cols-1 md:grid-cols-12 gap-3.5">
           {/* Left Chart: Daily Cashflow */}
-          <div className="md:col-span-7 matrix-card rounded-2xl p-4 flex flex-col">
+          <div className="md:col-span-7 matrix-card p-4 flex flex-col">
             <div className="flex items-center justify-between mb-3">
               <div>
                 <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider matrix-text-glow">
@@ -950,7 +949,7 @@ export default function MatrixOnePageFinanceApp() {
                     data={dailyChartData}
                     margin={{ top: 8, right: 8, left: -12, bottom: 0 }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 255, 65, 0.15)" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 255, 65, 0.14)" />
                     <XAxis dataKey="day" stroke="#80ff9e" fontSize={11} />
                     <YAxis
                       stroke="#80ff9e"
@@ -959,18 +958,18 @@ export default function MatrixOnePageFinanceApp() {
                     />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "rgba(1, 12, 4, 0.95)",
+                        backgroundColor: "rgba(1, 12, 4, 0.96)",
                         borderColor: "#00ff41",
-                        borderRadius: "12px",
-                        boxShadow: "0 0 20px rgba(0, 255, 65, 0.5)",
+                        borderRadius: "2px",
+                        boxShadow: "0 0 10px rgba(0, 255, 65, 0.35)",
                         color: "#e2ffe9",
                         fontSize: "12px",
                       }}
                       formatter={(value: number) => [formatCurrency(value), ""]}
                     />
                     <Legend wrapperStyle={{ fontSize: "11px" }} />
-                    <Bar dataKey="รายรับ" fill="#00ff41" radius={[5, 5, 0, 0]} />
-                    <Bar dataKey="รายจ่าย" fill="#ff0055" radius={[5, 5, 0, 0]} />
+                    <Bar dataKey="รายรับ" fill="#00ff41" radius={[1, 1, 0, 0]} />
+                    <Bar dataKey="รายจ่าย" fill="#ff0055" radius={[1, 1, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -978,7 +977,7 @@ export default function MatrixOnePageFinanceApp() {
           </div>
 
           {/* Right Chart: Category Donut + Breakdown */}
-          <div className="md:col-span-5 matrix-card rounded-2xl p-4 flex flex-col">
+          <div className="md:col-span-5 matrix-card p-4 flex flex-col">
             <div className="mb-2">
               <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider matrix-text-glow">
                 SECTOR_BREAKDOWN // สัดส่วนค่าใช้จ่ายตามหมวดหมู่
@@ -1005,8 +1004,8 @@ export default function MatrixOnePageFinanceApp() {
                         cy="50%"
                         innerRadius={42}
                         outerRadius={70}
-                        paddingAngle={3}
-                        stroke="rgba(0,255,65,0.4)"
+                        paddingAngle={2}
+                        stroke="rgba(0,255,65,0.35)"
                       >
                         {categoryBreakdown.map((entry) => (
                           <Cell key={entry.categoryId} fill={entry.color} />
@@ -1014,10 +1013,10 @@ export default function MatrixOnePageFinanceApp() {
                       </Pie>
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: "rgba(1, 12, 4, 0.95)",
+                          backgroundColor: "rgba(1, 12, 4, 0.96)",
                           borderColor: "#00ff41",
-                          borderRadius: "12px",
-                          boxShadow: "0 0 18px rgba(0, 255, 65, 0.5)",
+                          borderRadius: "2px",
+                          boxShadow: "0 0 10px rgba(0, 255, 65, 0.35)",
                           color: "#e2ffe9",
                           fontSize: "12px",
                         }}
@@ -1027,19 +1026,16 @@ export default function MatrixOnePageFinanceApp() {
                   </ResponsiveContainer>
                 </div>
 
-                <div className="sm:col-span-6 space-y-2 max-h-[185px] overflow-y-auto pr-1">
+                <div className="sm:col-span-6 space-y-1.5 max-h-[185px] overflow-y-auto pr-1">
                   {categoryBreakdown.map((item) => (
                     <div
                       key={item.categoryId}
-                      className="flex items-center justify-between text-[11px] bg-black/50 border border-[#00ff41]/25 px-2.5 py-1.5 rounded-lg"
+                      className="flex items-center justify-between text-[11px] bg-black/60 border border-[#00ff41]/25 px-2.5 py-1.5"
                     >
                       <div className="flex items-center gap-1.5 min-w-0">
                         <span
-                          className="w-2.5 h-2.5 rounded-full shrink-0"
-                          style={{
-                            backgroundColor: item.color,
-                            boxShadow: `0 0 8px ${item.color}`,
-                          }}
+                          className="w-2.5 h-2.5 shrink-0"
+                          style={{ backgroundColor: item.color }}
                         />
                         <span className="text-[#e2ffe9] font-bold truncate">
                           {item.name}
@@ -1061,10 +1057,10 @@ export default function MatrixOnePageFinanceApp() {
         {/* ==================== ROW 4: 1-PAGE BUDGET MATRIX + TRANSACTION STREAM ==================== */}
         <section className="grid grid-cols-1 md:grid-cols-12 gap-3.5">
           {/* LEFT PANEL (5 COLS): BUDGET MATRIX & ALERTS */}
-          <div className="md:col-span-5 matrix-card rounded-2xl p-4 flex flex-col space-y-3.5">
+          <div className="md:col-span-5 matrix-card p-4 flex flex-col space-y-3.5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Target className="w-4 h-4 text-[#00ff41] drop-shadow-[0_0_8px_#00ff41]" />
+                <Target className="w-4 h-4 text-[#00ff41]" />
                 <div>
                   <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider matrix-text-glow">
                     BUDGET_SHIELD // ตั้งงบ & แจ้งเตือน
@@ -1079,17 +1075,17 @@ export default function MatrixOnePageFinanceApp() {
             {/* Inline Budget Setter Form */}
             <form
               onSubmit={handleSaveBudget}
-              className="bg-black/70 border border-[#00ff41]/35 rounded-xl p-3 space-y-2.5 shadow-[inset_0_0_15px_rgba(0,255,65,0.08)]"
+              className="bg-black/75 border border-[#00ff41]/35 p-3 space-y-2.5"
             >
               <div className="grid grid-cols-12 gap-2">
-                <div className="col-span-12 sm:col-span-5">
+                <div className="col-span-12 sm:col-span-5 min-w-0">
                   <label className="block text-[10px] font-bold text-[#80ff9e] mb-1">
                     หมวดหมู่รายจ่าย
                   </label>
                   <select
                     value={budgetCatId}
                     onChange={(e) => setBudgetCatId(Number(e.target.value))}
-                    className="w-full px-2.5 py-1.5 matrix-input rounded-lg text-xs font-bold"
+                    className="w-full px-2.5 py-1.5 matrix-select text-xs font-bold"
                   >
                     {expenseCategories.map((c) => (
                       <option key={c.id} value={c.id} className="bg-[#010802] text-[#00ff41]">
@@ -1099,7 +1095,7 @@ export default function MatrixOnePageFinanceApp() {
                   </select>
                 </div>
 
-                <div className="col-span-6 sm:col-span-4">
+                <div className="col-span-6 sm:col-span-4 min-w-0">
                   <label className="block text-[10px] font-bold text-[#80ff9e] mb-1">
                     วงเงินงบ (฿)
                   </label>
@@ -1109,11 +1105,11 @@ export default function MatrixOnePageFinanceApp() {
                     required
                     value={budgetLimit}
                     onChange={(e) => setBudgetLimit(e.target.value)}
-                    className="w-full px-2.5 py-1.5 matrix-input rounded-lg text-xs font-bold"
+                    className="w-full px-2.5 py-1.5 matrix-input text-xs font-bold"
                   />
                 </div>
 
-                <div className="col-span-6 sm:col-span-3">
+                <div className="col-span-6 sm:col-span-3 min-w-0">
                   <label className="block text-[10px] font-bold text-[#80ff9e] mb-1">
                     เตือนที่ (%)
                   </label>
@@ -1124,7 +1120,7 @@ export default function MatrixOnePageFinanceApp() {
                     required
                     value={budgetThreshold}
                     onChange={(e) => setBudgetThreshold(e.target.value)}
-                    className="w-full px-2 py-1.5 matrix-input rounded-lg text-xs font-bold"
+                    className="w-full px-2 py-1.5 matrix-input text-xs font-bold"
                   />
                 </div>
               </div>
@@ -1132,7 +1128,7 @@ export default function MatrixOnePageFinanceApp() {
               <button
                 type="submit"
                 disabled={budgetSaving}
-                className="w-full py-2 rounded-lg matrix-btn-glow text-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full py-2 matrix-btn-glow text-xs flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5 stroke-[3]" />
                 <span>ตั้งค่า / อัปเดตงบประมาณหมวดหมู่นี้</span>
@@ -1157,22 +1153,22 @@ export default function MatrixOnePageFinanceApp() {
                   return (
                     <div
                       key={item.id}
-                      className={`p-3 rounded-xl border transition-all ${
+                      className={`p-3 border transition-all ${
                         item.status === "over"
                           ? "matrix-card-danger"
                           : item.status === "warning"
                           ? "matrix-card-warning"
-                          : "bg-black/65 border-[#00ff41]/35 shadow-[0_0_12px_rgba(0,255,65,0.15)]"
+                          : "bg-black/65 border-[#00ff41]/35"
                       }`}
                     >
                       <div className="flex items-center justify-between gap-2 mb-2">
                         <div className="flex items-center gap-2 min-w-0">
                           <div
-                            className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                            className="w-7 h-7 flex items-center justify-center shrink-0"
                             style={{
-                              backgroundColor: `${item.cat?.color || "#00ff41"}25`,
+                              backgroundColor: `${item.cat?.color || "#00ff41"}20`,
                               color: item.cat?.color || "#00ff41",
-                              boxShadow: `0 0 10px ${item.cat?.color || "#00ff41"}55`,
+                              border: `1px solid ${item.cat?.color || "#00ff41"}66`,
                             }}
                           >
                             <CategoryIcon name={item.cat?.icon || "Wallet"} className="w-4 h-4" />
@@ -1184,17 +1180,17 @@ export default function MatrixOnePageFinanceApp() {
 
                         <div className="flex items-center gap-1.5 shrink-0">
                           {item.status === "over" && (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#ff0055]/30 text-[#ff5c8d] border border-[#ff0055]">
+                            <span className="px-2 py-0.5 text-[10px] font-black bg-[#ff0055]/25 text-[#ff5c8d] border border-[#ff0055]">
                               เกินงบ! {item.pct.toFixed(0)}%
                             </span>
                           )}
                           {item.status === "warning" && (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#ffc400]/25 text-[#ffe57f] border border-[#ffc400]">
+                            <span className="px-2 py-0.5 text-[10px] font-black bg-[#ffc400]/20 text-[#ffe57f] border border-[#ffc400]">
                               ใกล้เต็ม {item.pct.toFixed(0)}%
                             </span>
                           )}
                           {item.status === "normal" && (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#00ff41]/20 text-[#00ff41] border border-[#00ff41]/50 flex items-center gap-1">
+                            <span className="px-2 py-0.5 text-[10px] font-black bg-[#00ff41]/15 text-[#00ff41] border border-[#00ff41]/50 flex items-center gap-1">
                               <CheckCircle2 className="w-3 h-3" /> {item.pct.toFixed(0)}%
                             </span>
                           )}
@@ -1208,9 +1204,9 @@ export default function MatrixOnePageFinanceApp() {
                         </div>
                       </div>
 
-                      <div className="w-full h-2 bg-black/90 rounded-full overflow-hidden border border-[#00ff41]/20 mb-1.5">
+                      <div className="w-full h-2 bg-black/90 overflow-hidden border border-[#00ff41]/25 mb-1.5">
                         <div
-                          className={`h-full rounded-full ${barClass}`}
+                          className={`h-full ${barClass}`}
                           style={{ width: `${Math.min(100, item.pct)}%` }}
                         />
                       </div>
@@ -1240,7 +1236,7 @@ export default function MatrixOnePageFinanceApp() {
           </div>
 
           {/* RIGHT PANEL (7 COLS): LIVE TRANSACTION STREAM */}
-          <div className="md:col-span-7 matrix-card rounded-2xl p-4 flex flex-col space-y-3.5">
+          <div className="md:col-span-7 matrix-card p-4 flex flex-col space-y-3.5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider matrix-text-glow">
@@ -1255,7 +1251,7 @@ export default function MatrixOnePageFinanceApp() {
                   setEditingTx(null);
                   setIsTxModalOpen(true);
                 }}
-                className="matrix-btn-outline px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1 cursor-pointer"
+                className="matrix-btn-outline px-3 py-1.5 text-xs font-extrabold flex items-center gap-1 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>เปิดฟอร์มเต็ม</span>
@@ -1264,18 +1260,18 @@ export default function MatrixOnePageFinanceApp() {
 
             {/* Filter Bar */}
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-2">
-              <div className="sm:col-span-5 relative">
-                <Search className="w-3.5 h-3.5 text-[#00ff41] absolute left-3 top-1/2 -translate-y-1/2" />
+              <div className="sm:col-span-5 relative min-w-0">
+                <Search className="w-3.5 h-3.5 text-[#00ff41] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="ค้นหาบันทึก หรือหมวดหมู่..."
-                  className="w-full pl-8 pr-3 py-1.5 matrix-input rounded-xl text-xs"
+                  className="w-full pl-8 pr-3 py-1.5 matrix-input text-xs"
                 />
               </div>
 
-              <div className="sm:col-span-4 flex items-center gap-1 bg-black/80 border border-[#00ff41]/35 rounded-xl p-1">
+              <div className="sm:col-span-4 flex items-center gap-1 bg-black/85 border border-[#00ff41]/35 p-0.5">
                 {(
                   [
                     { id: "all", label: "ทั้งหมด" },
@@ -1287,9 +1283,9 @@ export default function MatrixOnePageFinanceApp() {
                     key={tab.id}
                     type="button"
                     onClick={() => setTypeFilter(tab.id)}
-                    className={`flex-1 py-1 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer ${
+                    className={`flex-1 py-1 text-[11px] font-extrabold transition-all cursor-pointer ${
                       typeFilter === tab.id
-                        ? "bg-[#00ff41] text-black shadow-[0_0_12px_#00ff41]"
+                        ? "bg-[#00ff41] text-black"
                         : "text-[#80ff9e]/70 hover:text-[#00ff41]"
                     }`}
                   >
@@ -1298,11 +1294,11 @@ export default function MatrixOnePageFinanceApp() {
                 ))}
               </div>
 
-              <div className="sm:col-span-3">
+              <div className="sm:col-span-3 min-w-0">
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="w-full px-2.5 py-1.5 matrix-input rounded-xl text-xs font-bold"
+                  className="w-full px-2.5 py-1.5 matrix-select text-xs font-bold"
                 >
                   <option value="all" className="bg-[#010802] text-[#00ff41]">
                     ทุกหมวดหมู่
@@ -1328,15 +1324,15 @@ export default function MatrixOnePageFinanceApp() {
                   return (
                     <div
                       key={tx.id}
-                      className="p-3 rounded-xl bg-black/65 border border-[#00ff41]/30 hover:border-[#00ff41] hover:shadow-[0_0_18px_rgba(0,255,65,0.35)] transition-all flex items-center justify-between gap-2.5"
+                      className="p-3 bg-black/70 border border-[#00ff41]/30 hover:border-[#00ff41]/80 transition-all flex items-center justify-between gap-2.5"
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <div
-                          className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                          className="w-9 h-9 flex items-center justify-center shrink-0"
                           style={{
-                            backgroundColor: `${cat?.color || "#00ff41"}22`,
+                            backgroundColor: `${cat?.color || "#00ff41"}18`,
                             color: cat?.color || "#00ff41",
-                            boxShadow: `0 0 12px ${cat?.color || "#00ff41"}66`,
+                            border: `1px solid ${cat?.color || "#00ff41"}66`,
                           }}
                         >
                           <CategoryIcon name={cat?.icon || "Wallet"} className="w-4 h-4" />
@@ -1369,14 +1365,14 @@ export default function MatrixOnePageFinanceApp() {
                             setIsTxModalOpen(true);
                           }}
                           title="แก้ไข"
-                          className="p-1.5 rounded-lg bg-[#00ff41]/10 hover:bg-[#00ff41]/25 text-[#00ff41] border border-[#00ff41]/40 cursor-pointer"
+                          className="p-1.5 bg-[#00ff41]/10 hover:bg-[#00ff41]/25 text-[#00ff41] border border-[#00ff41]/40 cursor-pointer"
                         >
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => handleDeleteTransaction(tx.id)}
                           title="ลบ"
-                          className="p-1.5 rounded-lg bg-[#ff0055]/10 hover:bg-[#ff0055]/30 text-[#ff2a6d] border border-[#ff0055]/40 cursor-pointer"
+                          className="p-1.5 bg-[#ff0055]/10 hover:bg-[#ff0055]/30 text-[#ff2a6d] border border-[#ff0055]/40 cursor-pointer"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

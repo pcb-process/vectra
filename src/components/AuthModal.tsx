@@ -61,21 +61,21 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
-      <div className="matrix-card-intense rounded-2xl w-full max-w-md p-6 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4">
+      <div className="matrix-card-intense w-full max-w-md p-6 relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-lg text-[#00ff41]/70 hover:text-[#00ff41] hover:bg-[#00ff41]/10 transition-colors cursor-pointer"
+          className="absolute top-4 right-4 p-2 text-[#00ff41]/70 hover:text-[#00ff41] hover:bg-[#00ff41]/10 transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-11 h-11 rounded-2xl bg-[#00ff41]/15 border border-[#00ff41] flex items-center justify-center text-[#00ff41] shadow-[0_0_20px_rgba(0,255,65,0.6)]">
-            <Cloud className="w-6 h-6" />
+          <div className="w-10 h-10 bg-[#00ff41]/15 border border-[#00ff41] flex items-center justify-center text-[#00ff41]">
+            <Cloud className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-extrabold matrix-text-glow-lg">
+            <h2 className="text-base font-extrabold matrix-text-glow-lg">
               {mode === "login" ? "MATRIX_AUTH // เข้าสู่ระบบ" : "NEW_OPERATOR // สมัครสมาชิก"}
             </h2>
             <p className="text-xs text-[#80ff9e]/80">
@@ -85,7 +85,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
         </div>
 
         {/* Mode Switcher */}
-        <div className="grid grid-cols-2 gap-2 p-1 bg-black/80 border border-[#00ff41]/40 rounded-xl mb-5">
+        <div className="grid grid-cols-2 gap-1.5 p-1 bg-black/85 border border-[#00ff41]/40 mb-5">
           <button
             type="button"
             onClick={() => {
@@ -93,7 +93,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
               setErrorMsg(null);
               setInfoMsg(null);
             }}
-            className={`py-2 text-xs font-extrabold rounded-lg transition-all cursor-pointer ${
+            className={`py-2 text-xs font-extrabold transition-all cursor-pointer ${
               mode === "login"
                 ? "matrix-btn-glow"
                 : "text-[#80ff9e]/70 hover:text-[#00ff41]"
@@ -108,7 +108,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
               setErrorMsg(null);
               setInfoMsg(null);
             }}
-            className={`py-2 text-xs font-extrabold rounded-lg transition-all cursor-pointer ${
+            className={`py-2 text-xs font-extrabold transition-all cursor-pointer ${
               mode === "register"
                 ? "matrix-btn-glow"
                 : "text-[#80ff9e]/70 hover:text-[#00ff41]"
@@ -119,14 +119,14 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
         </div>
 
         {errorMsg && (
-          <div className="mb-4 p-3 rounded-xl matrix-card-danger flex items-start gap-2.5 text-xs text-[#ff80ab]">
+          <div className="mb-4 p-3 matrix-card-danger flex items-start gap-2.5 text-xs text-[#ff80ab]">
             <AlertCircle className="w-4 h-4 text-[#ff0055] shrink-0 mt-0.5" />
             <span>{errorMsg}</span>
           </div>
         )}
 
         {infoMsg && (
-          <div className="mb-4 p-3 rounded-xl matrix-card flex items-start gap-2.5 text-xs text-[#b9ffce]">
+          <div className="mb-4 p-3 matrix-card flex items-start gap-2.5 text-xs text-[#b9ffce]">
             <CheckCircle2 className="w-4 h-4 text-[#00ff41] shrink-0 mt-0.5" />
             <span>{infoMsg}</span>
           </div>
@@ -138,14 +138,14 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
               อีเมล (OPERATOR_EMAIL)
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-[#00ff41] absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Mail className="w-4 h-4 text-[#00ff41] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="neo@matrix.io"
-                className="w-full pl-10 pr-4 py-2.5 matrix-input rounded-xl text-sm"
+                className="w-full pl-10 pr-4 py-2.5 matrix-input text-sm"
               />
             </div>
           </div>
@@ -155,7 +155,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
               รหัสผ่าน (ACCESS_CODE อย่างน้อย 6 ตัวอักษร)
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-[#00ff41] absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Lock className="w-4 h-4 text-[#00ff41] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="password"
                 required
@@ -163,7 +163,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-2.5 matrix-input rounded-xl text-sm"
+                className="w-full pl-10 pr-4 py-2.5 matrix-input text-sm"
               />
             </div>
           </div>
@@ -171,7 +171,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl matrix-btn-glow text-sm cursor-pointer disabled:opacity-50"
+            className="w-full py-2.5 matrix-btn-glow text-sm cursor-pointer disabled:opacity-50"
           >
             {loading
               ? "CONNECTING TO MATRIX..."
