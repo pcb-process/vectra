@@ -68,20 +68,20 @@ export function BudgetModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-3">
-      <div className="matrix-card-intense w-full max-w-md p-5 relative">
+      <div className="matrix-card-intense w-full max-w-md p-4 sm:p-5 relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 text-[#00ff41]/70 hover:text-[#00ff41] hover:bg-[#00ff41]/10 transition-colors cursor-pointer"
+          className="absolute top-3.5 right-3.5 w-9 h-9 flex items-center justify-center text-[#00ff41]/80 hover:text-[#00ff41] hover:bg-[#00ff41]/15 border border-[#00ff41]/30 transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-2.5 mb-4">
-          <div className="w-8 h-8 bg-[#00ff41]/15 border border-[#00ff41]/60 flex items-center justify-center text-[#00ff41]">
+        <div className="flex items-center gap-2.5 mb-4 pr-10">
+          <div className="w-8 h-8 bg-[#00ff41]/15 border border-[#00ff41]/60 flex items-center justify-center text-[#00ff41] shrink-0">
             <Target className="w-4 h-4" />
           </div>
-          <div>
-            <h2 className="text-base font-bold matrix-text-glow-lg">
+          <div className="min-w-0">
+            <h2 className="text-base font-bold matrix-text-glow-lg truncate">
               ตั้งงบประมาณรายเดือน
             </h2>
             <p className="text-[11px] text-[#80ff9e]/70">
@@ -97,7 +97,7 @@ export function BudgetModal({
               <Layers className="w-3.5 h-3.5 text-[#00ff41]" />
               <span>หมวดหมู่รายจ่าย</span>
             </label>
-            <div className="grid grid-cols-2 gap-2 max-h-[190px] overflow-y-auto pr-1">
+            <div className="grid grid-cols-2 gap-2 max-h-[210px] overflow-y-auto pr-1">
               {expenseCategories.map((cat) => {
                 const selected = cat.id === categoryId;
                 return (
@@ -105,7 +105,7 @@ export function BudgetModal({
                     key={cat.id}
                     type="button"
                     onClick={() => setCategoryId(cat.id)}
-                    className={`flex items-center gap-2 p-2 border text-left transition-all cursor-pointer ${
+                    className={`flex items-center gap-2 p-2.5 min-h-[44px] border text-left transition-all cursor-pointer ${
                       selected
                         ? "bg-[#00ff41]/20 border-[#00ff41] text-white"
                         : "bg-black/60 border-[#00ff41]/25 text-[#b9ffce]/80 hover:border-[#00ff41]/60"
@@ -141,7 +141,7 @@ export function BudgetModal({
                 required
                 value={amountLimit}
                 onChange={(e) => setAmountLimit(e.target.value)}
-                className="w-full px-3 py-2 matrix-input text-sm font-bold"
+                className="w-full h-10 px-3 matrix-input text-sm font-bold"
               />
             </div>
 
@@ -157,23 +157,23 @@ export function BudgetModal({
                 required
                 value={alertThreshold}
                 onChange={(e) => setAlertThreshold(e.target.value)}
-                className="w-full px-3 py-2 matrix-input text-sm font-bold"
+                className="w-full h-10 px-3 matrix-input text-sm font-bold"
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-2.5 pt-2">
+          <div className="grid grid-cols-2 sm:flex sm:items-center sm:justify-end gap-2.5 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 matrix-btn-outline text-xs font-bold cursor-pointer"
+              className="h-10 px-4 matrix-btn-outline text-xs font-bold flex items-center justify-center cursor-pointer"
             >
               ยกเลิก
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="px-5 py-2 matrix-btn-glow text-xs flex items-center gap-1.5 cursor-pointer"
+              className="h-10 px-5 matrix-btn-glow text-xs flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <Check className="w-4 h-4 stroke-[2.5]" />
               <span>บันทึกงบประมาณ</span>

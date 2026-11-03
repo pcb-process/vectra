@@ -34,7 +34,6 @@ import {
   Database,
   Target,
   CheckCircle2,
-  Calendar,
   BarChart3,
   PieChart as PieChartIcon,
   Receipt,
@@ -540,82 +539,125 @@ export default function SmartFinanceOnePageApp() {
   );
 
   return (
-    <div className="relative min-h-screen pb-8">
+    <div className="relative min-h-screen pb-8 overflow-x-hidden">
       <MatrixRainBackground />
 
       {/* Minimal 1-Page Container */}
-      <div className="relative z-10 max-w-6xl mx-auto px-3 sm:px-5 pt-4 space-y-4">
-        {/* ==================== MINIMAL TOP HEADER ==================== */}
-        <header className="matrix-card px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-[#00ff41]/15 border border-[#00ff41] flex items-center justify-center">
-              <Wallet className="w-4 h-4 text-[#00ff41]" />
+      <div className="relative z-10 max-w-6xl mx-auto px-3 sm:px-5 pt-3 space-y-3.5">
+        {/* ==================== MINIMAL RESPONSIVE HEADER ==================== */}
+        <header className="matrix-card p-3 sm:px-4 sm:py-3 space-y-2.5 sm:space-y-0 sm:flex sm:items-center sm:justify-between gap-3">
+          {/* Top Row on Mobile: Brand + Utility Icons (Auth & Refresh) */}
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-9 h-9 bg-[#00ff41]/15 border border-[#00ff41] flex items-center justify-center shrink-0">
+                <Wallet className="w-4 h-4 text-[#00ff41]" />
+              </div>
+              <div className="min-w-0">
+                <h1 className="text-sm sm:text-base font-bold matrix-text-glow-lg truncate">
+                  Smart Personal Finance
+                </h1>
+                <p className="text-[11px] text-[#80ff9e]/75">
+                  รอบเดือน {formatThaiMonthYear(selectedMonth)}
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-sm sm:text-base font-bold matrix-text-glow-lg leading-tight">
-                Smart Personal Finance
-              </h1>
-              <p className="text-[11px] text-[#80ff9e]/70">
-                {formatThaiMonthYear(selectedMonth)}
-              </p>
+
+            {/* Mobile-only Auth & Refresh utility buttons */}
+            <div className="flex sm:hidden items-center gap-1.5 shrink-0">
+              {isDemoMode ? (
+                <button
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="matrix-btn-outline h-9 px-2.5 text-xs font-bold flex items-center gap-1 cursor-pointer"
+                  title="เข้าสู่ระบบ Cloud"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-[#00ff41]" />
+                  <span>Login</span>
+                </button>
+              ) : (
+                <>
+                  {transactions.length === 0 && (
+                    <button
+                      onClick={handleSeedCloudSampleData}
+                      className="matrix-btn-outline w-9 h-9 flex items-center justify-center cursor-pointer"
+                      title="นำเข้าข้อมูลตัวอย่าง"
+                    >
+                      <Database className="w-4 h-4" />
+                    </button>
+                  )}
+                  <button
+                    onClick={handleSignOut}
+                    title="ออกจากระบบ"
+                    className="w-9 h-9 bg-[#ff0055]/15 border border-[#ff0055]/50 text-[#ff2a6d] flex items-center justify-center cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </>
+              )}
+
+              <button
+                onClick={loadFinanceData}
+                title="รีเฟรช"
+                className="w-9 h-9 matrix-btn-outline flex items-center justify-center cursor-pointer"
+              >
+                <RefreshCw className={`w-4 h-4 ${loadingData ? "animate-spin" : ""}`} />
+              </button>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Month Picker */}
-            <div className="flex items-center gap-1.5 matrix-input px-2.5 py-1.5">
-              <Calendar className="w-3.5 h-3.5 text-[#00ff41] shrink-0" />
-              <input
-                type="month"
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
-                className="bg-transparent text-xs font-bold text-[#e2ffe9] focus:outline-none min-w-0"
-              />
-            </div>
+          {/* Action Row: Month Selector + Primary Modal Triggers (Fits 100% cleanly on 375px mobile & desktop) */}
+          <div className="grid grid-cols-12 sm:flex items-center gap-2">
+            {/* Month Picker (No duplicate icon) */}
+            <input
+              type="month"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="col-span-5 sm:w-auto h-9 px-2.5 matrix-input text-xs font-bold text-[#e2ffe9] focus:outline-none"
+            />
 
-            {/* Auth / Cloud Button */}
-            {isDemoMode ? (
-              <button
-                onClick={() => setIsAuthModalOpen(true)}
-                className="matrix-btn-outline px-2.5 py-1.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
-                title="เข้าสู่ระบบ Cloud"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-[#00ff41]" />
-                <span className="hidden sm:inline">Demo</span>
-                <LogIn className="w-3.5 h-3.5" />
-              </button>
-            ) : (
-              <div className="flex items-center gap-1.5">
-                <span className="px-2.5 py-1.5 bg-[#00ff41]/10 border border-[#00ff41]/40 text-xs font-bold text-[#00ff41] flex items-center gap-1.5 max-w-[140px] truncate">
-                  <Cloud className="w-3.5 h-3.5 shrink-0" />
-                  <span className="truncate">{userEmail}</span>
-                </span>
-                {transactions.length === 0 && (
-                  <button
-                    onClick={handleSeedCloudSampleData}
-                    className="matrix-btn-outline px-2 py-1.5 text-xs font-bold flex items-center gap-1 cursor-pointer"
-                    title="นำเข้าข้อมูลตัวอย่าง"
-                  >
-                    <Database className="w-3.5 h-3.5" />
-                  </button>
-                )}
+            {/* Desktop-only Auth & Refresh buttons */}
+            <div className="hidden sm:flex items-center gap-2">
+              {isDemoMode ? (
                 <button
-                  onClick={handleSignOut}
-                  title="ออกจากระบบ"
-                  className="p-1.5 bg-[#ff0055]/15 border border-[#ff0055]/50 text-[#ff2a6d] hover:bg-[#ff0055]/30 cursor-pointer"
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="matrix-btn-outline h-9 px-3 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
                 >
-                  <LogOut className="w-3.5 h-3.5" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#00ff41]" />
+                  <span>โหมดทดลอง</span>
+                  <LogIn className="w-3.5 h-3.5" />
                 </button>
-              </div>
-            )}
+              ) : (
+                <div className="flex items-center gap-1.5">
+                  <span className="h-9 px-2.5 bg-[#00ff41]/10 border border-[#00ff41]/40 text-xs font-bold text-[#00ff41] flex items-center gap-1.5 max-w-[150px] truncate">
+                    <Cloud className="w-3.5 h-3.5 shrink-0" />
+                    <span className="truncate">{userEmail}</span>
+                  </span>
+                  {transactions.length === 0 && (
+                    <button
+                      onClick={handleSeedCloudSampleData}
+                      className="matrix-btn-outline h-9 px-2.5 text-xs font-bold flex items-center gap-1 cursor-pointer"
+                      title="นำเข้าข้อมูลตัวอย่าง"
+                    >
+                      <Database className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                  <button
+                    onClick={handleSignOut}
+                    title="ออกจากระบบ"
+                    className="w-9 h-9 bg-[#ff0055]/15 border border-[#ff0055]/50 text-[#ff2a6d] hover:bg-[#ff0055]/30 flex items-center justify-center cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
 
-            <button
-              onClick={loadFinanceData}
-              title="รีเฟรช"
-              className="p-1.5 matrix-btn-outline cursor-pointer"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${loadingData ? "animate-spin" : ""}`} />
-            </button>
+              <button
+                onClick={loadFinanceData}
+                title="รีเฟรช"
+                className="w-9 h-9 matrix-btn-outline flex items-center justify-center cursor-pointer"
+              >
+                <RefreshCw className={`w-4 h-4 ${loadingData ? "animate-spin" : ""}`} />
+              </button>
+            </div>
 
             {/* Modal Trigger: Set Budget */}
             <button
@@ -623,10 +665,10 @@ export default function SmartFinanceOnePageApp() {
                 setEditingBudget({});
                 setIsBudgetModalOpen(true);
               }}
-              className="matrix-btn-outline px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+              className="col-span-3 sm:w-auto h-9 px-2.5 sm:px-3 matrix-btn-outline text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
             >
-              <Target className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">ตั้งงบ</span>
+              <Target className="w-3.5 h-3.5 shrink-0" />
+              <span>ตั้งงบ</span>
             </button>
 
             {/* Modal Trigger: Add Transaction */}
@@ -635,45 +677,45 @@ export default function SmartFinanceOnePageApp() {
                 setEditingTx(null);
                 setIsTxModalOpen(true);
               }}
-              className="matrix-btn-glow px-3.5 py-1.5 text-xs flex items-center gap-1.5 cursor-pointer"
+              className="col-span-4 sm:w-auto h-9 px-2.5 sm:px-3.5 matrix-btn-glow text-xs flex items-center justify-center gap-1 cursor-pointer"
             >
-              <Plus className="w-4 h-4 stroke-[2.5]" />
-              <span>จดรายการ</span>
+              <Plus className="w-4 h-4 stroke-[2.5] shrink-0" />
+              <span className="truncate">จดรายการ</span>
             </button>
           </div>
         </header>
 
         {/* ==================== 4 MINIMAL KPI CARDS ==================== */}
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <div className="matrix-card p-3.5 flex items-center justify-between">
+        <section className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+          <div className="matrix-card p-3 sm:p-3.5 flex items-center justify-between gap-2">
             <div className="min-w-0">
-              <span className="text-[11px] text-[#80ff9e]/75 block">รายรับรวม</span>
-              <span className="text-base sm:text-xl font-black matrix-text-glow-lg truncate block mt-0.5">
+              <span className="text-[11px] text-[#80ff9e]/75 block truncate">รายรับรวม</span>
+              <span className="text-sm sm:text-xl font-black matrix-text-glow-lg truncate block mt-0.5">
                 +{formatCurrency(totalIncome)}
               </span>
             </div>
-            <div className="w-8 h-8 bg-[#00ff41]/15 border border-[#00ff41]/50 flex items-center justify-center text-[#00ff41] shrink-0">
-              <TrendingUp className="w-4 h-4" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[#00ff41]/15 border border-[#00ff41]/50 flex items-center justify-center text-[#00ff41] shrink-0">
+              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
 
-          <div className="matrix-card p-3.5 flex items-center justify-between">
+          <div className="matrix-card p-3 sm:p-3.5 flex items-center justify-between gap-2">
             <div className="min-w-0">
-              <span className="text-[11px] text-[#80ff9e]/75 block">รายจ่ายรวม</span>
-              <span className="text-base sm:text-xl font-black matrix-text-danger-glow truncate block mt-0.5">
+              <span className="text-[11px] text-[#80ff9e]/75 block truncate">รายจ่ายรวม</span>
+              <span className="text-sm sm:text-xl font-black matrix-text-danger-glow truncate block mt-0.5">
                 -{formatCurrency(totalExpense)}
               </span>
             </div>
-            <div className="w-8 h-8 bg-[#ff0055]/15 border border-[#ff0055]/50 flex items-center justify-center text-[#ff2a6d] shrink-0">
-              <TrendingDown className="w-4 h-4" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[#ff0055]/15 border border-[#ff0055]/50 flex items-center justify-center text-[#ff2a6d] shrink-0">
+              <TrendingDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
 
-          <div className="matrix-card p-3.5 flex items-center justify-between">
+          <div className="matrix-card p-3 sm:p-3.5 flex items-center justify-between gap-2">
             <div className="min-w-0">
-              <span className="text-[11px] text-[#80ff9e]/75 block">คงเหลือสุทธิ</span>
+              <span className="text-[11px] text-[#80ff9e]/75 block truncate">คงเหลือสุทธิ</span>
               <span
-                className={`text-base sm:text-xl font-black truncate block mt-0.5 ${
+                className={`text-sm sm:text-xl font-black truncate block mt-0.5 ${
                   netBalance >= 0 ? "matrix-text-cyan-glow" : "matrix-text-danger-glow"
                 }`}
               >
@@ -681,20 +723,20 @@ export default function SmartFinanceOnePageApp() {
                 {formatCurrency(netBalance)}
               </span>
             </div>
-            <div className="w-8 h-8 bg-[#00ffd5]/15 border border-[#00ffd5]/50 flex items-center justify-center text-[#00ffd5] shrink-0">
-              <Wallet className="w-4 h-4" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[#00ffd5]/15 border border-[#00ffd5]/50 flex items-center justify-center text-[#00ffd5] shrink-0">
+              <Wallet className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
 
-          <div className="matrix-card p-3.5 flex items-center justify-between">
+          <div className="matrix-card p-3 sm:p-3.5 flex items-center justify-between gap-2">
             <div className="min-w-0">
-              <span className="text-[11px] text-[#80ff9e]/75 block">อัตราการออม</span>
-              <span className="text-base sm:text-xl font-black matrix-text-glow-lg block mt-0.5">
+              <span className="text-[11px] text-[#80ff9e]/75 block truncate">อัตราการออม</span>
+              <span className="text-sm sm:text-xl font-black matrix-text-glow-lg block mt-0.5">
                 {savingsRate.toFixed(1)}%
               </span>
             </div>
-            <div className="w-8 h-8 bg-[#39ff14]/15 border border-[#39ff14]/50 flex items-center justify-center text-[#39ff14] shrink-0">
-              <PiggyBank className="w-4 h-4" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[#39ff14]/15 border border-[#39ff14]/50 flex items-center justify-center text-[#39ff14] shrink-0">
+              <PiggyBank className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
         </section>
@@ -702,15 +744,15 @@ export default function SmartFinanceOnePageApp() {
         {/* ==================== CHARTS ROW (MINIMAL) ==================== */}
         <section className="grid grid-cols-1 md:grid-cols-12 gap-3.5">
           {/* Daily Cashflow BarChart */}
-          <div className="md:col-span-7 matrix-card p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 text-[#00ff41]" />
-                <h2 className="text-xs sm:text-sm font-bold matrix-text-glow">
+          <div className="md:col-span-7 matrix-card p-3.5 sm:p-4">
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <div className="flex items-center gap-2 min-w-0">
+                <BarChart3 className="w-4 h-4 text-[#00ff41] shrink-0" />
+                <h2 className="text-xs sm:text-sm font-bold matrix-text-glow truncate">
                   แนวโน้มรายรับ-รายจ่ายรายวัน
                 </h2>
               </div>
-              <div className="flex items-center gap-3 text-[11px]">
+              <div className="flex items-center gap-2.5 text-[11px] shrink-0">
                 <span className="flex items-center gap-1 text-[#00ff41]">
                   <span className="w-2 h-2 bg-[#00ff41]" /> รายรับ
                 </span>
@@ -729,7 +771,7 @@ export default function SmartFinanceOnePageApp() {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={dailyChartData}
-                    margin={{ top: 4, right: 4, left: -16, bottom: 0 }}
+                    margin={{ top: 4, right: 4, left: -18, bottom: 0 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 255, 65, 0.12)" />
                     <XAxis dataKey="day" stroke="#80ff9e" fontSize={11} />
@@ -756,11 +798,11 @@ export default function SmartFinanceOnePageApp() {
             )}
           </div>
 
-          {/* Category Breakdown Donut */}
-          <div className="md:col-span-5 matrix-card p-4">
+          {/* Category Breakdown Donut (Stacks cleanly on narrow mobile, side-by-side on larger screens) */}
+          <div className="md:col-span-5 matrix-card p-3.5 sm:p-4">
             <div className="flex items-center gap-2 mb-3">
-              <PieChartIcon className="w-4 h-4 text-[#00ff41]" />
-              <h2 className="text-xs sm:text-sm font-bold matrix-text-glow">
+              <PieChartIcon className="w-4 h-4 text-[#00ff41] shrink-0" />
+              <h2 className="text-xs sm:text-sm font-bold matrix-text-glow truncate">
                 สัดส่วนค่าใช้จ่ายตามหมวดหมู่
               </h2>
             </div>
@@ -770,8 +812,8 @@ export default function SmartFinanceOnePageApp() {
                 ยังไม่มีรายจ่ายในเดือนนี้
               </div>
             ) : (
-              <div className="grid grid-cols-12 gap-2 items-center">
-                <div className="col-span-5 h-[170px]">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+                <div className="sm:col-span-5 h-[150px] sm:h-[170px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
@@ -781,7 +823,7 @@ export default function SmartFinanceOnePageApp() {
                         cx="50%"
                         cy="50%"
                         innerRadius={36}
-                        outerRadius={60}
+                        outerRadius={58}
                         paddingAngle={2}
                         stroke="rgba(0,255,65,0.3)"
                       >
@@ -803,13 +845,13 @@ export default function SmartFinanceOnePageApp() {
                   </ResponsiveContainer>
                 </div>
 
-                <div className="col-span-7 space-y-1.5 max-h-[170px] overflow-y-auto pr-1">
+                <div className="sm:col-span-7 space-y-1.5 max-h-[170px] overflow-y-auto pr-1">
                   {categoryBreakdown.map((item) => (
                     <div
                       key={item.categoryId}
-                      className="flex items-center justify-between text-[11px] bg-black/50 border border-[#00ff41]/20 px-2 py-1"
+                      className="flex items-center justify-between text-xs bg-black/50 border border-[#00ff41]/20 px-2.5 py-1.5"
                     >
-                      <div className="flex items-center gap-1.5 min-w-0">
+                      <div className="flex items-center gap-2 min-w-0">
                         <span
                           className="w-4 h-4 flex items-center justify-center shrink-0"
                           style={{ color: item.color }}
@@ -818,7 +860,7 @@ export default function SmartFinanceOnePageApp() {
                         </span>
                         <span className="text-[#e2ffe9] truncate">{item.name}</span>
                       </div>
-                      <span className="text-[#00ff41] font-bold shrink-0 ml-1">
+                      <span className="text-[#00ff41] font-bold shrink-0 ml-2">
                         {item.percentage.toFixed(0)}%
                       </span>
                     </div>
@@ -832,11 +874,11 @@ export default function SmartFinanceOnePageApp() {
         {/* ==================== BOTTOM ROW: BUDGETS + TRANSACTIONS ==================== */}
         <section className="grid grid-cols-1 md:grid-cols-12 gap-3.5">
           {/* LEFT (5 COLS): BUDGET STATUS */}
-          <div className="md:col-span-5 matrix-card p-4 flex flex-col">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Target className="w-4 h-4 text-[#00ff41]" />
-                <h2 className="text-xs sm:text-sm font-bold matrix-text-glow">
+          <div className="md:col-span-5 matrix-card p-3.5 sm:p-4 flex flex-col">
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <div className="flex items-center gap-2 min-w-0">
+                <Target className="w-4 h-4 text-[#00ff41] shrink-0" />
+                <h2 className="text-xs sm:text-sm font-bold matrix-text-glow truncate">
                   งบประมาณประจำเดือน
                 </h2>
               </div>
@@ -845,14 +887,14 @@ export default function SmartFinanceOnePageApp() {
                   setEditingBudget({});
                   setIsBudgetModalOpen(true);
                 }}
-                className="matrix-btn-outline px-2.5 py-1 text-[11px] font-bold flex items-center gap-1 cursor-pointer"
+                className="matrix-btn-outline h-8 px-3 text-xs font-bold flex items-center gap-1 cursor-pointer shrink-0"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>ตั้งงบ</span>
               </button>
             </div>
 
-            <div className="space-y-2.5 max-h-[360px] overflow-y-auto pr-1">
+            <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
               {enrichedBudgets.length === 0 ? (
                 <div className="py-12 text-center text-xs text-[#80ff9e]/50">
                   ยังไม่ได้ตั้งงบ กดปุ่ม &ldquo;+ ตั้งงบ&rdquo; เพื่อกำหนดวงเงิน
@@ -877,23 +919,29 @@ export default function SmartFinanceOnePageApp() {
                           : "bg-black/60 border-[#00ff41]/30"
                       }`}
                     >
-                      <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <div className="flex items-center justify-between gap-2 mb-2">
                         <div className="flex items-center gap-2 min-w-0">
                           <span
-                            className="w-6 h-6 flex items-center justify-center shrink-0"
+                            className="w-7 h-7 flex items-center justify-center shrink-0"
                             style={{
                               backgroundColor: `${item.cat?.color || "#00ff41"}18`,
                               color: item.cat?.color || "#00ff41",
                               border: `1px solid ${item.cat?.color || "#00ff41"}55`,
                             }}
                           >
-                            <CategoryIcon name={item.cat?.icon || "Wallet"} className="w-3.5 h-3.5" />
+                            <CategoryIcon name={item.cat?.icon || "Wallet"} className="w-4 h-4" />
                           </span>
-                          <span className="text-xs font-bold text-white truncate">
-                            {item.cat?.name}
-                          </span>
+                          <div className="min-w-0">
+                            <span className="text-xs font-bold text-white truncate block">
+                              {item.cat?.name}
+                            </span>
+                            <span className="text-[11px] text-[#b9ffce]/75 block">
+                              {formatCurrency(item.spent)} / {formatCurrency(item.limit)}
+                            </span>
+                          </div>
                         </div>
 
+                        {/* Mobile-friendly Touch Action Buttons (32x32px) */}
                         <div className="flex items-center gap-1.5 shrink-0">
                           {item.status === "over" && (
                             <span className="px-1.5 py-0.5 text-[10px] font-bold bg-[#ff0055]/25 text-[#ff5c8d] border border-[#ff0055] flex items-center gap-0.5">
@@ -921,30 +969,25 @@ export default function SmartFinanceOnePageApp() {
                               setIsBudgetModalOpen(true);
                             }}
                             title="แก้ไขงบ"
-                            className="p-1 text-[#80ff9e]/60 hover:text-[#00ff41] cursor-pointer"
+                            className="w-8 h-8 bg-[#00ff41]/10 hover:bg-[#00ff41]/25 border border-[#00ff41]/40 text-[#00ff41] flex items-center justify-center cursor-pointer"
                           >
                             <SlidersHorizontal className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleDeleteBudget(item.id)}
                             title="ลบงบ"
-                            className="p-1 text-[#80ff9e]/50 hover:text-[#ff2a6d] cursor-pointer"
+                            className="w-8 h-8 bg-[#ff0055]/10 hover:bg-[#ff0055]/25 border border-[#ff0055]/40 text-[#ff2a6d] flex items-center justify-center cursor-pointer"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       </div>
 
-                      <div className="w-full h-1.5 bg-black/90 overflow-hidden border border-[#00ff41]/20 mb-1.5">
+                      <div className="w-full h-1.5 bg-black/90 overflow-hidden border border-[#00ff41]/20">
                         <div
                           className={`h-full ${barClass}`}
                           style={{ width: `${Math.min(100, item.pct)}%` }}
                         />
-                      </div>
-
-                      <div className="flex items-center justify-between text-[11px] text-[#b9ffce]/80">
-                        <span>ใช้ไป {formatCurrency(item.spent)}</span>
-                        <span>งบ {formatCurrency(item.limit)}</span>
                       </div>
                     </div>
                   );
@@ -954,35 +997,48 @@ export default function SmartFinanceOnePageApp() {
           </div>
 
           {/* RIGHT (7 COLS): TRANSACTIONS */}
-          <div className="md:col-span-7 matrix-card p-4 flex flex-col">
-            <div className="flex items-center justify-between gap-2 mb-3">
-              <div className="flex items-center gap-2">
-                <Receipt className="w-4 h-4 text-[#00ff41]" />
-                <h2 className="text-xs sm:text-sm font-bold matrix-text-glow">
+          <div className="md:col-span-7 matrix-card p-3.5 sm:p-4 flex flex-col">
+            {/* Row 1: Title + Add Button (Never overflows on 375px screen) */}
+            <div className="flex items-center justify-between gap-2 mb-2.5">
+              <div className="flex items-center gap-2 min-w-0">
+                <Receipt className="w-4 h-4 text-[#00ff41] shrink-0" />
+                <h2 className="text-xs sm:text-sm font-bold matrix-text-glow truncate">
                   รายการรับ-จ่าย ({filteredTransactions.length})
                 </h2>
               </div>
 
-              <div className="flex items-center gap-2">
-                {/* Compact Search */}
-                <div className="relative w-36 sm:w-48">
-                  <Search className="w-3 h-3 text-[#00ff41] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="ค้นหา..."
-                    className="w-full pl-7 pr-2 py-1 matrix-input text-xs"
-                  />
-                </div>
+              <button
+                onClick={() => {
+                  setEditingTx(null);
+                  setIsTxModalOpen(true);
+                }}
+                className="matrix-btn-glow h-8 px-3 text-xs flex items-center gap-1 cursor-pointer shrink-0"
+              >
+                <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                <span>เพิ่มรายการ</span>
+              </button>
+            </div>
 
-                {/* Compact Type Filter */}
+            {/* Row 2: Clean Full-Width Search + Filter Grid */}
+            <div className="grid grid-cols-12 gap-2 mb-3">
+              <div className="col-span-7 sm:col-span-8 relative min-w-0">
+                <Search className="w-3.5 h-3.5 text-[#00ff41] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="ค้นหารายการ..."
+                  className="w-full h-9 pl-8 pr-2.5 matrix-input text-xs"
+                />
+              </div>
+
+              <div className="col-span-5 sm:col-span-4 min-w-0">
                 <select
                   value={typeFilter}
                   onChange={(e) =>
                     setTypeFilter(e.target.value as "all" | "income" | "expense")
                   }
-                  className="px-2.5 py-1 matrix-select text-xs font-bold"
+                  className="w-full h-9 px-2.5 matrix-select text-xs font-bold"
                 >
                   <option value="all" className="bg-[#010802] text-[#00ff41]">
                     ทั้งหมด
@@ -994,21 +1050,11 @@ export default function SmartFinanceOnePageApp() {
                     รายจ่าย
                   </option>
                 </select>
-
-                <button
-                  onClick={() => {
-                    setEditingTx(null);
-                    setIsTxModalOpen(true);
-                  }}
-                  className="matrix-btn-glow px-2.5 py-1 text-[11px] flex items-center gap-1 cursor-pointer shrink-0"
-                >
-                  <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-                  <span>เพิ่ม</span>
-                </button>
               </div>
             </div>
 
-            <div className="space-y-2 max-h-[360px] overflow-y-auto pr-1">
+            {/* Transaction Rows with 32x32px Mobile Touch Targets */}
+            <div className="space-y-2 max-h-[380px] overflow-y-auto pr-1">
               {filteredTransactions.length === 0 ? (
                 <div className="py-12 text-center text-xs text-[#80ff9e]/50">
                   ไม่มีรายการธุรกรรม
@@ -1019,7 +1065,7 @@ export default function SmartFinanceOnePageApp() {
                   return (
                     <div
                       key={tx.id}
-                      className="px-3 py-2.5 bg-black/65 border border-[#00ff41]/25 hover:border-[#00ff41]/70 transition-all flex items-center justify-between gap-2.5"
+                      className="p-2.5 sm:px-3 sm:py-2.5 bg-black/65 border border-[#00ff41]/25 hover:border-[#00ff41]/70 transition-all flex items-center justify-between gap-2"
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
                         <div
@@ -1042,9 +1088,9 @@ export default function SmartFinanceOnePageApp() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 shrink-0">
+                      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                         <span
-                          className={`text-xs sm:text-sm font-bold ${
+                          className={`text-xs sm:text-sm font-bold mr-0.5 ${
                             tx.type === "income"
                               ? "matrix-text-glow"
                               : "matrix-text-danger-glow"
@@ -1060,14 +1106,14 @@ export default function SmartFinanceOnePageApp() {
                             setIsTxModalOpen(true);
                           }}
                           title="แก้ไข"
-                          className="p-1 text-[#80ff9e]/60 hover:text-[#00ff41] cursor-pointer"
+                          className="w-8 h-8 bg-[#00ff41]/10 hover:bg-[#00ff41]/25 border border-[#00ff41]/40 text-[#00ff41] flex items-center justify-center cursor-pointer"
                         >
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => handleDeleteTransaction(tx.id)}
                           title="ลบ"
-                          className="p-1 text-[#80ff9e]/50 hover:text-[#ff2a6d] cursor-pointer"
+                          className="w-8 h-8 bg-[#ff0055]/10 hover:bg-[#ff0055]/25 border border-[#ff0055]/40 text-[#ff2a6d] flex items-center justify-center cursor-pointer"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

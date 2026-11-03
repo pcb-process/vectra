@@ -101,17 +101,17 @@ export function TransactionModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-3">
-      <div className="matrix-card-intense w-full max-w-lg p-5 relative max-h-[92vh] overflow-y-auto">
+      <div className="matrix-card-intense w-full max-w-lg p-4 sm:p-5 relative max-h-[92vh] overflow-y-auto">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-[#00ff41]/70 hover:text-[#00ff41] hover:bg-[#00ff41]/10 transition-colors cursor-pointer"
+          className="absolute top-3.5 right-3.5 w-9 h-9 flex items-center justify-center text-[#00ff41]/80 hover:text-[#00ff41] hover:bg-[#00ff41]/15 border border-[#00ff41]/30 transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-2.5 mb-1">
-          <Wallet className="w-5 h-5 text-[#00ff41]" />
-          <h2 className="text-lg font-bold matrix-text-glow-lg">
+        <div className="flex items-center gap-2.5 mb-1 pr-10">
+          <Wallet className="w-5 h-5 text-[#00ff41] shrink-0" />
+          <h2 className="text-base sm:text-lg font-bold matrix-text-glow-lg truncate">
             {editingTransaction ? "แก้ไขรายการรับ-จ่าย" : "บันทึกรายการรับ-จ่ายใหม่"}
           </h2>
         </div>
@@ -125,7 +125,7 @@ export function TransactionModal({
             <button
               type="button"
               onClick={() => handleTypeChange("expense")}
-              className={`py-2 text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              className={`h-10 text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 type === "expense"
                   ? "bg-[#ff0055] text-white"
                   : "text-[#80ff9e]/60 hover:text-[#00ff41]"
@@ -137,7 +137,7 @@ export function TransactionModal({
             <button
               type="button"
               onClick={() => handleTypeChange("income")}
-              className={`py-2 text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              className={`h-10 text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 type === "income"
                   ? "bg-[#00ff41] text-black"
                   : "text-[#80ff9e]/60 hover:text-[#00ff41]"
@@ -162,7 +162,7 @@ export function TransactionModal({
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full px-4 py-2.5 matrix-input text-xl font-extrabold matrix-text-glow-lg"
+              className="w-full h-11 px-3.5 matrix-input text-lg font-extrabold matrix-text-glow-lg"
             />
           </div>
 
@@ -180,7 +180,7 @@ export function TransactionModal({
                     key={cat.id}
                     type="button"
                     onClick={() => setCategoryId(cat.id)}
-                    className={`flex items-center gap-2 p-2.5 border text-left transition-all cursor-pointer ${
+                    className={`flex items-center gap-2 p-2.5 min-h-[44px] border text-left transition-all cursor-pointer ${
                       selected
                         ? "bg-[#00ff41]/20 border-[#00ff41] text-white shadow-[0_0_8px_rgba(0,255,65,0.35)]"
                         : "bg-black/60 border-[#00ff41]/25 text-[#b9ffce]/80 hover:border-[#00ff41]/60"
@@ -217,7 +217,7 @@ export function TransactionModal({
                 required
                 value={transactionDate}
                 onChange={(e) => setTransactionDate(e.target.value)}
-                className="w-full px-3 py-2 matrix-input text-xs font-semibold"
+                className="w-full h-10 px-3 matrix-input text-xs font-semibold"
               />
             </div>
 
@@ -231,24 +231,24 @@ export function TransactionModal({
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 placeholder="เช่น ค่ากาแฟ, เงินเดือน..."
-                className="w-full px-3 py-2 matrix-input text-xs"
+                className="w-full h-10 px-3 matrix-input text-xs"
               />
             </div>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-2">
+          <div className="grid grid-cols-2 sm:flex sm:items-center sm:justify-end gap-2.5 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 matrix-btn-outline text-xs font-bold cursor-pointer"
+              className="h-10 px-4 matrix-btn-outline text-xs font-bold flex items-center justify-center cursor-pointer"
             >
               ยกเลิก
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2 matrix-btn-glow text-xs flex items-center gap-2 cursor-pointer"
+              className="h-10 px-5 matrix-btn-glow text-xs flex items-center justify-center gap-2 cursor-pointer"
             >
               {editingTransaction ? (
                 <>
