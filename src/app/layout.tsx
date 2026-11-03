@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MATRIX FINANCE OS // Smart Personal Finance",
+  title: "Smart Personal Finance | ระบบจัดการการเงินส่วนบุคคล",
   description:
-    "1-Page Cyber-Matrix Personal Finance Command Center — บันทึกรายรับ-รายจ่าย ตั้งงบประมาณพร้อมแจ้งเตือน และวิเคราะห์สุขภาพการเงิน (Next.js + Supabase)",
+    "บันทึกรายรับ-รายจ่าย ตั้งงบประมาณพร้อมแจ้งเตือน และวิเคราะห์สุขภาพการเงินในหน้าเดียว (Next.js + Supabase)",
 };
 
 export const viewport: Viewport = {

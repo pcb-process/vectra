@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { X, PlusCircle, Save, Terminal } from "lucide-react";
+import { X, PlusCircle, Save, Wallet } from "lucide-react";
 import { Category, Transaction, TransactionType } from "@/types/finance";
 import { CategoryIcon } from "./CategoryIcon";
 
@@ -99,13 +99,13 @@ export function TransactionModal({
         </button>
 
         <div className="flex items-center gap-2.5 mb-1">
-          <Terminal className="w-5 h-5 text-[#00ff41]" />
+          <Wallet className="w-5 h-5 text-[#00ff41]" />
           <h2 className="text-lg font-bold matrix-text-glow-lg">
-            {editingTransaction ? "EDIT_TRANSACTION // แก้ไขรายการ" : "NEW_TRANSACTION // บันทึกรายการ"}
+            {editingTransaction ? "แก้ไขรายการรับ-จ่าย" : "บันทึกรายการรับ-จ่ายใหม่"}
           </h2>
         </div>
         <p className="text-xs text-[#80ff9e]/70 mb-4">
-          เลือกประเภทรายการ หมวดหมู่ และจำนวนเงินเพื่ออัปเดตเข้าสู่ระบบ Matrix ทันที
+          เลือกประเภทรายการ หมวดหมู่ และจำนวนเงินเพื่อบันทึกข้อมูล
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -120,7 +120,7 @@ export function TransactionModal({
                   : "text-[#80ff9e]/60 hover:text-[#00ff41]"
               }`}
             >
-              [ - ] รายจ่าย (EXPENSE)
+              รายจ่าย (Expense)
             </button>
             <button
               type="button"
@@ -131,14 +131,14 @@ export function TransactionModal({
                   : "text-[#80ff9e]/60 hover:text-[#00ff41]"
               }`}
             >
-              [ + ] รายรับ (INCOME)
+              รายรับ (Income)
             </button>
           </div>
 
           {/* Amount Input */}
           <div>
             <label className="block text-xs font-semibold text-[#80ff9e] mb-1.5">
-              จำนวนเงิน (THB) *
+              จำนวนเงิน (บาท) *
             </label>
             <input
               type="number"
@@ -155,7 +155,7 @@ export function TransactionModal({
           {/* Category Grid */}
           <div>
             <label className="block text-xs font-semibold text-[#80ff9e] mb-2">
-              เลือกหมวดหมู่ (CATEGORY_NODE) *
+              เลือกหมวดหมู่ *
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {filteredCategories.map((cat) => {
@@ -207,7 +207,7 @@ export function TransactionModal({
 
             <div>
               <label className="block text-xs font-semibold text-[#80ff9e] mb-1.5">
-                บันทึกช่วยจำ (NOTE_LOG)
+                บันทึกช่วยจำ (Note)
               </label>
               <input
                 type="text"
@@ -241,7 +241,7 @@ export function TransactionModal({
               ) : (
                 <>
                   <PlusCircle className="w-4 h-4" />
-                  <span>EXECUTE // เพิ่มรายการ</span>
+                  <span>เพิ่มรายการ</span>
                 </>
               )}
             </button>

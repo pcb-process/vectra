@@ -76,10 +76,10 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
           </div>
           <div>
             <h2 className="text-base font-extrabold matrix-text-glow-lg">
-              {mode === "login" ? "MATRIX_AUTH // เข้าสู่ระบบ" : "NEW_OPERATOR // สมัครสมาชิก"}
+              {mode === "login" ? "เข้าสู่ระบบ (Supabase Cloud)" : "สมัครสมาชิกใหม่"}
             </h2>
             <p className="text-xs text-[#80ff9e]/80">
-              เชื่อมต่อฐานข้อมูล Supabase Cloud พร้อมระบบป้องกันข้อมูล RLS
+              ซิงค์ข้อมูลรายรับ-รายจ่ายและงบประมาณข้ามอุปกรณ์อย่างปลอดภัย
             </p>
           </div>
         </div>
@@ -99,7 +99,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
                 : "text-[#80ff9e]/70 hover:text-[#00ff41]"
             }`}
           >
-            เข้าสู่ระบบ (SIGN IN)
+            เข้าสู่ระบบ (Sign In)
           </button>
           <button
             type="button"
@@ -114,7 +114,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
                 : "text-[#80ff9e]/70 hover:text-[#00ff41]"
             }`}
           >
-            สมัครสมาชิก (SIGN UP)
+            สมัครสมาชิก (Sign Up)
           </button>
         </div>
 
@@ -135,7 +135,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-[#80ff9e] mb-1.5">
-              อีเมล (OPERATOR_EMAIL)
+              อีเมล (Email)
             </label>
             <div className="relative">
               <Mail className="w-4 h-4 text-[#00ff41] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -144,7 +144,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="neo@matrix.io"
+                placeholder="you@example.com"
                 className="w-full pl-10 pr-4 py-2.5 matrix-input text-sm"
               />
             </div>
@@ -152,7 +152,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
 
           <div>
             <label className="block text-xs font-semibold text-[#80ff9e] mb-1.5">
-              รหัสผ่าน (ACCESS_CODE อย่างน้อย 6 ตัวอักษร)
+              รหัสผ่าน (อย่างน้อย 6 ตัวอักษร)
             </label>
             <div className="relative">
               <Lock className="w-4 h-4 text-[#00ff41] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -174,24 +174,24 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
             className="w-full py-2.5 matrix-btn-glow text-sm cursor-pointer disabled:opacity-50"
           >
             {loading
-              ? "CONNECTING TO MATRIX..."
+              ? "กำลังดำเนินการ..."
               : mode === "login"
-              ? "JACK IN // เข้าสู่ระบบ"
-              : "INITIALIZE // สมัครสมาชิก"}
+              ? "เข้าสู่ระบบ"
+              : "สมัครสมาชิก"}
           </button>
         </form>
 
         <div className="mt-5 pt-4 border-t border-[#00ff41]/30 flex items-center justify-between text-xs text-[#80ff9e]/80">
           <div className="flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-[#00ff41]" />
-            <span>หรือทดสอบต่อในโหมดจำลอง</span>
+            <span>หรือใช้งานต่อในโหมดตัวอย่าง</span>
           </div>
           <button
             type="button"
             onClick={onClose}
             className="matrix-text-glow hover:underline font-bold cursor-pointer"
           >
-            SIMULATION MODE →
+            ใช้โหมดทดลองต่อ →
           </button>
         </div>
       </div>

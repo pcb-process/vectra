@@ -32,9 +32,7 @@ import {
   RefreshCw,
   Database,
   Target,
-  Terminal,
   CheckCircle2,
-  Zap,
   Calendar,
 } from "lucide-react";
 import {
@@ -52,18 +50,18 @@ import {
 } from "recharts";
 
 const THAI_MONTHS = [
-  "ม.ค.",
-  "ก.พ.",
-  "มี.ค.",
-  "เม.ย.",
-  "พ.ค.",
-  "มิ.ย.",
-  "ก.ค.",
-  "ส.ค.",
-  "ก.ย.",
-  "ต.ค.",
-  "พ.ย.",
-  "ธ.ค.",
+  "มกราคม",
+  "กุมภาพันธ์",
+  "มีนาคม",
+  "เมษายน",
+  "พฤษภาคม",
+  "มิถุนายน",
+  "กรกฎาคม",
+  "สิงหาคม",
+  "กันยายน",
+  "ตุลาคม",
+  "พฤศจิกายน",
+  "ธันวาคม",
 ];
 
 function formatThaiMonthYear(monthYear: string): string {
@@ -101,7 +99,7 @@ function getMonthDateRange(monthYear: string): { start: string; end: string } {
   };
 }
 
-export default function MatrixOnePageFinanceApp() {
+export default function SmartFinanceOnePageApp() {
   const [selectedMonth, setSelectedMonth] = useState<string>(getCurrentYearMonth);
 
   const [userId, setUserId] = useState<string | null>(null);
@@ -595,24 +593,24 @@ export default function MatrixOnePageFinanceApp() {
 
       {/* Main 1-Page Container optimized for iPhone (Desktop/Mobile viewport) & Desktop */}
       <div className="relative z-10 max-w-[1440px] mx-auto px-2.5 sm:px-5 pt-3 space-y-3.5">
-        {/* ==================== TOP MATRIX HUD COMMAND BAR ==================== */}
+        {/* ==================== TOP HEADER BAR ==================== */}
         <header className="matrix-card-intense px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
           {/* Brand Title */}
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 bg-[#00ff41]/15 border border-[#00ff41] flex items-center justify-center shadow-[0_0_8px_rgba(0,255,65,0.4)]">
-              <Terminal className="w-5 h-5 text-[#00ff41]" />
+              <Wallet className="w-5 h-5 text-[#00ff41]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-sm sm:text-base font-black tracking-wider matrix-text-glow-lg">
-                  MATRIX // FINANCE_OS
+                <h1 className="text-sm sm:text-base font-black tracking-wide matrix-text-glow-lg">
+                  Smart Personal Finance
                 </h1>
-                <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-extrabold bg-[#00ff41]/15 text-[#00ff41] border border-[#00ff41]/60">
-                  1-PAGE HUD
+                <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-bold bg-[#00ff41]/15 text-[#00ff41] border border-[#00ff41]/60">
+                  Dashboard
                 </span>
               </div>
               <p className="text-[11px] text-[#80ff9e]/75">
-                ระบบบัญชาการการเงินส่วนบุคคล • {formatThaiMonthYear(selectedMonth)}
+                ภาพรวมการเงินประจำเดือน{formatThaiMonthYear(selectedMonth)}
               </p>
             </div>
           </div>
@@ -637,7 +635,7 @@ export default function MatrixOnePageFinanceApp() {
                 className="matrix-btn-outline px-2.5 py-1.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
               >
                 <Sparkles className="w-3.5 h-3.5 text-[#00ff41]" />
-                <span className="hidden sm:inline">SIMULATION</span>
+                <span className="hidden sm:inline">โหมดทดลอง (เข้าสู่ระบบ)</span>
                 <LogIn className="w-3.5 h-3.5" />
               </button>
             ) : (
@@ -653,7 +651,7 @@ export default function MatrixOnePageFinanceApp() {
                     title="นำเข้าข้อมูลตัวอย่างเข้า Cloud"
                   >
                     <Database className="w-3.5 h-3.5" />
-                    <span>SEED</span>
+                    <span>ข้อมูลตัวอย่าง</span>
                   </button>
                 )}
                 <button
@@ -684,18 +682,18 @@ export default function MatrixOnePageFinanceApp() {
               className="matrix-btn-glow px-3 py-1.5 text-xs flex items-center gap-1 cursor-pointer"
             >
               <Plus className="w-4 h-4 stroke-[3]" />
-              <span>+ จดรายการ</span>
+              <span>จดรายการ</span>
             </button>
           </div>
         </header>
 
-        {/* ==================== ROW 1: 4 ANGULAR MATRIX KPI PODS ==================== */}
+        {/* ==================== ROW 1: 4 SUMMARY KPI CARDS ==================== */}
         <section className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {/* Pod 1: Income */}
+          {/* Card 1: Income */}
           <div className="matrix-card p-3.5 relative overflow-hidden">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#80ff9e]/80">
-                INFLOW // รายรับรวม
+              <span className="text-[11px] font-bold text-[#80ff9e]/85">
+                รายรับรวม (Income)
               </span>
               <div className="w-7 h-7 bg-[#00ff41]/15 border border-[#00ff41]/60 flex items-center justify-center text-[#00ff41]">
                 <TrendingUp className="w-4 h-4" />
@@ -709,11 +707,11 @@ export default function MatrixOnePageFinanceApp() {
             </div>
           </div>
 
-          {/* Pod 2: Expense */}
+          {/* Card 2: Expense */}
           <div className="matrix-card p-3.5 relative overflow-hidden">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#80ff9e]/80">
-                OUTFLOW // รายจ่ายรวม
+              <span className="text-[11px] font-bold text-[#80ff9e]/85">
+                รายจ่ายรวม (Expense)
               </span>
               <div className="w-7 h-7 bg-[#ff0055]/15 border border-[#ff0055]/60 flex items-center justify-center text-[#ff2a6d]">
                 <TrendingDown className="w-4 h-4" />
@@ -727,11 +725,11 @@ export default function MatrixOnePageFinanceApp() {
             </div>
           </div>
 
-          {/* Pod 3: Net Cashflow */}
+          {/* Card 3: Net Cashflow */}
           <div className="matrix-card p-3.5 relative overflow-hidden">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#80ff9e]/80">
-                NET_PULSE // คงเหลือสุทธิ
+              <span className="text-[11px] font-bold text-[#80ff9e]/85">
+                คงเหลือสุทธิ (Net Balance)
               </span>
               <div className="w-7 h-7 bg-[#00ffd5]/15 border border-[#00ffd5]/60 flex items-center justify-center text-[#00ffd5]">
                 <Wallet className="w-4 h-4" />
@@ -746,15 +744,15 @@ export default function MatrixOnePageFinanceApp() {
               {formatCurrency(netBalance)}
             </div>
             <div className="mt-1 text-[11px] text-[#80ff9e]/75 font-semibold">
-              {netBalance >= 0 ? "STATUS: POSITIVE_FLOW" : "STATUS: DEFICIT_ALERT"}
+              {netBalance >= 0 ? "สภาพคล่องเป็นบวก" : "รายจ่ายสูงกว่ารายรับ"}
             </div>
           </div>
 
-          {/* Pod 4: Savings Rate */}
+          {/* Card 4: Savings Rate */}
           <div className="matrix-card p-3.5 relative overflow-hidden">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#80ff9e]/80">
-                RESERVE // อัตราการออม
+              <span className="text-[11px] font-bold text-[#80ff9e]/85">
+                สัดส่วนเงินออม (Savings Rate)
               </span>
               <div className="w-7 h-7 bg-[#39ff14]/15 border border-[#39ff14]/60 flex items-center justify-center text-[#39ff14]">
                 <PiggyBank className="w-4 h-4" />
@@ -764,14 +762,14 @@ export default function MatrixOnePageFinanceApp() {
               {savingsRate.toFixed(1)}%
             </div>
             <div className="mt-1 text-[11px] text-[#00ff41]/90 font-semibold">
-              {savingsRate >= 20 ? "OPTIMAL (≥ 20% TARGET)" : "RECOMMENDED: ≥ 20%"}
+              {savingsRate >= 20 ? "อยู่ในเกณฑ์ดีมาก (≥ 20%)" : "แนะนำออมอย่างน้อย 20%"}
             </div>
           </div>
         </section>
 
-        {/* ==================== ROW 2: INLINE 1-PAGE QUICK TERMINAL + ALERTS ==================== */}
+        {/* ==================== ROW 2: INLINE QUICK ENTRY + BUDGET ALERTS ==================== */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-3">
-          {/* Quick-Add Inline Command Bar */}
+          {/* Quick-Add Inline Bar */}
           <form
             onSubmit={handleQuickAddSubmit}
             className={`${
@@ -780,9 +778,9 @@ export default function MatrixOnePageFinanceApp() {
           >
             <div className="flex items-center justify-between mb-2.5">
               <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-[#00ff41]" />
-                <span className="text-xs font-black tracking-wider matrix-text-glow">
-                  QUICK_INJECT // บันทึกรายการด่วนในหน้าเดียว
+                <Plus className="w-4 h-4 text-[#00ff41]" />
+                <span className="text-xs font-bold matrix-text-glow">
+                  บันทึกรายการด่วน (Quick Add)
                 </span>
               </div>
               <div className="flex items-center gap-1 bg-black/90 border border-[#00ff41]/40 p-0.5">
@@ -886,8 +884,8 @@ export default function MatrixOnePageFinanceApp() {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-[#ffc400]" />
-                  <span className="text-xs font-black matrix-text-warning-glow">
-                    WARNING // แจ้งเตือนงบประมาณ ({budgetAlerts.length} หมวดหมู่)
+                  <span className="text-xs font-bold matrix-text-warning-glow">
+                    แจ้งเตือนงบประมาณ ({budgetAlerts.length} หมวดหมู่)
                   </span>
                 </div>
               </div>
@@ -923,24 +921,24 @@ export default function MatrixOnePageFinanceApp() {
           )}
         </section>
 
-        {/* ==================== ROW 3: ANALYTICS CHARTS HUD (SIDE-BY-SIDE) ==================== */}
+        {/* ==================== ROW 3: ANALYTICS CHARTS (SIDE-BY-SIDE) ==================== */}
         <section className="grid grid-cols-1 md:grid-cols-12 gap-3.5">
           {/* Left Chart: Daily Cashflow */}
           <div className="md:col-span-7 matrix-card p-4 flex flex-col">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider matrix-text-glow">
-                  CASHFLOW_MATRIX // แนวโน้มรายรับ-รายจ่ายรายวัน
+                <h2 className="text-xs sm:text-sm font-bold matrix-text-glow">
+                  แนวโน้มรายรับ-รายจ่ายรายวัน (Daily Cashflow)
                 </h2>
                 <p className="text-[11px] text-[#80ff9e]/70">
-                  เปรียบเทียบกระแสเงินสดเข้า (#00FF41) และออก (#FF0055) รายวัน
+                  เปรียบเทียบยอดรายรับและรายจ่ายในแต่ละวันของเดือน
                 </p>
               </div>
             </div>
 
             {dailyChartData.length === 0 ? (
               <div className="h-[220px] flex items-center justify-center text-xs text-[#80ff9e]/50">
-                NO_SIGNAL // ยังไม่มีข้อมูลธุรกรรมในเดือนนี้
+                ยังไม่มีข้อมูลธุรกรรมในเดือนนี้
               </div>
             ) : (
               <div className="h-[220px] w-full">
@@ -979,17 +977,17 @@ export default function MatrixOnePageFinanceApp() {
           {/* Right Chart: Category Donut + Breakdown */}
           <div className="md:col-span-5 matrix-card p-4 flex flex-col">
             <div className="mb-2">
-              <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider matrix-text-glow">
-                SECTOR_BREAKDOWN // สัดส่วนค่าใช้จ่ายตามหมวดหมู่
+              <h2 className="text-xs sm:text-sm font-bold matrix-text-glow">
+                สัดส่วนค่าใช้จ่ายตามหมวดหมู่ (Category Breakdown)
               </h2>
               <p className="text-[11px] text-[#80ff9e]/70">
-                วิเคราะห์หมวดหมู่ที่ใช้จ่ายสูงสุดในเดือนนี้
+                จัดอันดับหมวดหมู่ที่ใช้จ่ายสูงสุดในเดือนนี้
               </p>
             </div>
 
             {categoryBreakdown.length === 0 ? (
               <div className="h-[220px] flex items-center justify-center text-xs text-[#80ff9e]/50">
-                NO_EXPENSE_DATA // ยังไม่มีรายจ่ายในเดือนนี้
+                ยังไม่มีรายจ่ายในเดือนนี้
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center flex-1">
@@ -1054,19 +1052,19 @@ export default function MatrixOnePageFinanceApp() {
           </div>
         </section>
 
-        {/* ==================== ROW 4: 1-PAGE BUDGET MATRIX + TRANSACTION STREAM ==================== */}
+        {/* ==================== ROW 4: BUDGETING + TRANSACTION LIST ==================== */}
         <section className="grid grid-cols-1 md:grid-cols-12 gap-3.5">
-          {/* LEFT PANEL (5 COLS): BUDGET MATRIX & ALERTS */}
+          {/* LEFT PANEL (5 COLS): BUDGET & ALERTS */}
           <div className="md:col-span-5 matrix-card p-4 flex flex-col space-y-3.5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4 text-[#00ff41]" />
                 <div>
-                  <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider matrix-text-glow">
-                    BUDGET_SHIELD // ตั้งงบ & แจ้งเตือน
+                  <h2 className="text-xs sm:text-sm font-bold matrix-text-glow">
+                    ตั้งงบประมาณและแจ้งเตือน (Monthly Budget)
                   </h2>
                   <p className="text-[11px] text-[#80ff9e]/70">
-                    ตั้งเพดานรายจ่ายและเกณฑ์เตือน (%) รายหมวดหมู่
+                    กำหนดวงเงินรายจ่ายและเปอร์เซ็นต์แจ้งเตือนรายหมวดหมู่
                   </p>
                 </div>
               </div>
@@ -1131,7 +1129,7 @@ export default function MatrixOnePageFinanceApp() {
                 className="w-full py-2 matrix-btn-glow text-xs flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5 stroke-[3]" />
-                <span>ตั้งค่า / อัปเดตงบประมาณหมวดหมู่นี้</span>
+                <span>บันทึกงบประมาณ</span>
               </button>
             </form>
 
@@ -1235,15 +1233,15 @@ export default function MatrixOnePageFinanceApp() {
             </div>
           </div>
 
-          {/* RIGHT PANEL (7 COLS): LIVE TRANSACTION STREAM */}
+          {/* RIGHT PANEL (7 COLS): TRANSACTIONS LIST */}
           <div className="md:col-span-7 matrix-card p-4 flex flex-col space-y-3.5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider matrix-text-glow">
-                  TRANSACTION_STREAM // รายการรับ-จ่าย ({filteredTransactions.length} รายการ)
+                <h2 className="text-xs sm:text-sm font-bold matrix-text-glow">
+                  รายการรายรับ-รายจ่าย ({filteredTransactions.length} รายการ)
                 </h2>
                 <p className="text-[11px] text-[#80ff9e]/70">
-                  ค้นหา กรองหมวดหมู่ แก้ไข หรือลบรายการได้ทันทีจากหน้าเดียว
+                  ค้นหา กรองตามหมวดหมู่ แก้ไข หรือลบรายการได้ทันที
                 </p>
               </div>
               <button
@@ -1254,7 +1252,7 @@ export default function MatrixOnePageFinanceApp() {
                 className="matrix-btn-outline px-3 py-1.5 text-xs font-extrabold flex items-center gap-1 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>เปิดฟอร์มเต็ม</span>
+                <span>เพิ่มรายการละเอียด</span>
               </button>
             </div>
 
