@@ -62,29 +62,29 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4">
-      <div className="matrix-card-intense w-full max-w-md p-6 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-3">
+      <div className="matrix-card-intense w-full max-w-sm p-4 sm:p-5 relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-[#00ff41]/70 hover:text-[#00ff41] hover:bg-[#00ff41]/10 transition-colors cursor-pointer"
+          className="absolute top-3.5 right-3.5 w-8 h-8 flex items-center justify-center text-[#00ff41]/80 hover:text-[#00ff41] hover:bg-[#00ff41]/15 border border-[#00ff41]/30 transition-colors cursor-pointer"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
 
-        <div className="flex items-center gap-3 mb-5">
-          <BrandLogo size="md" />
-          <div>
-            <h2 className="text-base font-extrabold matrix-text-glow-lg">
-              {mode === "login" ? "เข้าสู่ระบบ VECTRA Cloud" : "สร้างบัญชี VECTRA ใหม่"}
+        <div className="flex items-center gap-2.5 mb-4 pr-10">
+          <BrandLogo size="sm" />
+          <div className="min-w-0">
+            <h2 className="text-sm sm:text-base font-extrabold matrix-text-glow-lg truncate">
+              {mode === "login" ? "เข้าสู่ระบบ VECTRA" : "สร้างบัญชี VECTRA"}
             </h2>
-            <p className="text-xs text-[#80ff9e]/80">
-              ซิงค์ข้อมูลรายรับ-รายจ่ายและงบประมาณข้ามอุปกรณ์อย่างปลอดภัย
+            <p className="text-[11px] text-[#80ff9e]/75 truncate">
+              ซิงค์ข้อมูลข้ามอุปกรณ์ผ่านระบบ Cloud
             </p>
           </div>
         </div>
 
-        {/* Mode Switcher */}
-        <div className="grid grid-cols-2 gap-1.5 p-1 bg-black/85 border border-[#00ff41]/40 mb-5">
+        {/* Mode Switcher (Strictly Single-Line) */}
+        <div className="grid grid-cols-2 gap-1.5 p-1 bg-black/85 border border-[#00ff41]/40 mb-4">
           <button
             type="button"
             onClick={() => {
@@ -92,13 +92,13 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
               setErrorMsg(null);
               setInfoMsg(null);
             }}
-            className={`py-2 text-xs font-extrabold transition-all cursor-pointer ${
+            className={`h-9 px-2 text-xs font-extrabold whitespace-nowrap transition-all cursor-pointer ${
               mode === "login"
                 ? "matrix-btn-glow"
                 : "text-[#80ff9e]/70 hover:text-[#00ff41]"
             }`}
           >
-            เข้าสู่ระบบ (Sign In)
+            เข้าสู่ระบบ
           </button>
           <button
             type="button"
@@ -107,54 +107,54 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
               setErrorMsg(null);
               setInfoMsg(null);
             }}
-            className={`py-2 text-xs font-extrabold transition-all cursor-pointer ${
+            className={`h-9 px-2 text-xs font-extrabold whitespace-nowrap transition-all cursor-pointer ${
               mode === "register"
                 ? "matrix-btn-glow"
                 : "text-[#80ff9e]/70 hover:text-[#00ff41]"
             }`}
           >
-            สมัครสมาชิก (Sign Up)
+            สมัครสมาชิก
           </button>
         </div>
 
         {errorMsg && (
-          <div className="mb-4 p-3 matrix-card-danger flex items-start gap-2.5 text-xs text-[#ff80ab]">
+          <div className="mb-3 p-2.5 matrix-card-danger flex items-start gap-2 text-xs text-[#ff80ab]">
             <AlertCircle className="w-4 h-4 text-[#ff0055] shrink-0 mt-0.5" />
             <span>{errorMsg}</span>
           </div>
         )}
 
         {infoMsg && (
-          <div className="mb-4 p-3 matrix-card flex items-start gap-2.5 text-xs text-[#b9ffce]">
+          <div className="mb-3 p-2.5 matrix-card flex items-start gap-2 text-xs text-[#b9ffce]">
             <CheckCircle2 className="w-4 h-4 text-[#00ff41] shrink-0 mt-0.5" />
             <span>{infoMsg}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label className="block text-xs font-semibold text-[#80ff9e] mb-1.5">
-              อีเมล (Email)
+            <label className="block text-xs font-semibold text-[#80ff9e] mb-1">
+              อีเมล
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-[#00ff41] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Mail className="w-4 h-4 text-[#00ff41] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full pl-10 pr-4 py-2.5 matrix-input text-sm"
+                className="w-full h-9 pl-9 pr-3 matrix-input text-xs"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#80ff9e] mb-1.5">
-              รหัสผ่าน (อย่างน้อย 6 ตัวอักษร)
+            <label className="block text-xs font-semibold text-[#80ff9e] mb-1">
+              รหัสผ่าน (6 ตัวอักษรขึ้นไป)
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-[#00ff41] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Lock className="w-4 h-4 text-[#00ff41] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="password"
                 required
@@ -162,7 +162,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-2.5 matrix-input text-sm"
+                className="w-full h-9 pl-9 pr-3 matrix-input text-xs"
               />
             </div>
           </div>
@@ -170,7 +170,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 matrix-btn-glow text-sm cursor-pointer disabled:opacity-50"
+            className="w-full h-9 matrix-btn-glow text-xs cursor-pointer disabled:opacity-50"
           >
             {loading
               ? "กำลังดำเนินการ..."
@@ -180,17 +180,17 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
           </button>
         </form>
 
-        <div className="mt-5 pt-4 border-t border-[#00ff41]/30 flex items-center justify-between text-xs text-[#80ff9e]/80">
-          <div className="flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-[#00ff41]" />
-            <span>หรือใช้งานต่อในโหมดตัวอย่าง</span>
+        <div className="mt-4 pt-3 border-t border-[#00ff41]/30 flex items-center justify-between gap-2 text-xs text-[#80ff9e]/80">
+          <div className="flex items-center gap-1.5 min-w-0 truncate">
+            <Sparkles className="w-3.5 h-3.5 text-[#00ff41] shrink-0" />
+            <span className="truncate">ใช้งานโหมดตัวอย่าง</span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="matrix-text-glow hover:underline font-bold cursor-pointer"
+            className="matrix-text-glow hover:underline font-bold cursor-pointer whitespace-nowrap shrink-0"
           >
-            ใช้โหมดทดลองต่อ →
+            ทดลองต่อ →
           </button>
         </div>
       </div>

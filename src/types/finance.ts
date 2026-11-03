@@ -35,15 +35,15 @@ export interface Budget {
 
 export const DEFAULT_CATEGORIES: Category[] = [
   { id: 1, user_id: null, name: "เงินเดือน", type: "income", icon: "Briefcase", color: "#00ff41" },
-  { id: 6, user_id: null, name: "รายได้เสริม / ฟรีแลนซ์", type: "income", icon: "TrendingUp", color: "#00ffd5" },
-  { id: 4, user_id: null, name: "โบนัส / เงินปันผล", type: "income", icon: "Gift", color: "#76ff03" },
-  { id: 8, user_id: null, name: "อาหารและเครื่องดื่ม", type: "expense", icon: "Utensils", color: "#00ff88" },
-  { id: 9, user_id: null, name: "การเดินทาง / น้ำมัน", type: "expense", icon: "Car", color: "#00e5ff" },
-  { id: 3, user_id: null, name: "ที่อยู่อาศัย / ค่าน้ำ-ค่าไฟ", type: "expense", icon: "Home", color: "#39ff14" },
-  { id: 5, user_id: null, name: "ช้อปปิ้ง / ของใช้ส่วนตัว", type: "expense", icon: "ShoppingBag", color: "#ff0055" },
-  { id: 2, user_id: null, name: "สุขภาพ / การแพทย์", type: "expense", icon: "HeartPulse", color: "#ff4081" },
-  { id: 10, user_id: null, name: "ความบันเทิง / สมาชิกรายเดือน", type: "expense", icon: "Film", color: "#ffc400" },
-  { id: 7, user_id: null, name: "การออม / ลงทุน", type: "expense", icon: "PiggyBank", color: "#00ffa6" },
+  { id: 6, user_id: null, name: "รายได้เสริม", type: "income", icon: "TrendingUp", color: "#00ffd5" },
+  { id: 4, user_id: null, name: "โบนัส/ปันผล", type: "income", icon: "Gift", color: "#76ff03" },
+  { id: 8, user_id: null, name: "อาหาร", type: "expense", icon: "Utensils", color: "#00ff88" },
+  { id: 9, user_id: null, name: "การเดินทาง", type: "expense", icon: "Car", color: "#00e5ff" },
+  { id: 3, user_id: null, name: "ที่อยู่อาศัย", type: "expense", icon: "Home", color: "#39ff14" },
+  { id: 5, user_id: null, name: "ช้อปปิ้ง", type: "expense", icon: "ShoppingBag", color: "#ff0055" },
+  { id: 2, user_id: null, name: "สุขภาพ", type: "expense", icon: "HeartPulse", color: "#ff4081" },
+  { id: 10, user_id: null, name: "ความบันเทิง", type: "expense", icon: "Film", color: "#ffc400" },
+  { id: 7, user_id: null, name: "ออม/ลงทุน", type: "expense", icon: "PiggyBank", color: "#00ffa6" },
 ];
 
 export function getInitialDemoTransactions(monthYear: string): Transaction[] {

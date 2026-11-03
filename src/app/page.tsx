@@ -173,11 +173,15 @@ export default function SmartFinanceOnePageApp() {
         .order("id", { ascending: true });
 
       if (catData && catData.length > 0) {
-        const neonMap = new Map(DEFAULT_CATEGORIES.map((c) => [c.name, c.color]));
-        const enhanced = (catData as Category[]).map((c) => ({
-          ...c,
-          color: neonMap.get(c.name) || c.color || "#00ff41",
-        }));
+        const defaultById = new Map(DEFAULT_CATEGORIES.map((c) => [c.id, c]));
+        const enhanced = (catData as Category[]).map((c) => {
+          const def = defaultById.get(c.id);
+          return {
+            ...c,
+            name: def?.name || c.name,
+            color: def?.color || c.color || "#00ff41",
+          };
+        });
         setCategories(enhanced);
       } else {
         setCategories(DEFAULT_CATEGORIES);
@@ -840,8 +844,8 @@ export default function SmartFinanceOnePageApp() {
                 ยังไม่มีรายจ่ายในเดือนนี้
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
-                <div className="sm:col-span-5 h-[150px] sm:h-[170px] w-full">
+              <div className="grid grid-cols-12 gap-2.5 items-center">
+                <div className="col-span-5 h-[140px] sm:h-[170px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
@@ -850,8 +854,8 @@ export default function SmartFinanceOnePageApp() {
                         nameKey="name"
                         cx="50%"
                         cy="50%"
-                        innerRadius={36}
-                        outerRadius={58}
+                        innerRadius={32}
+                        outerRadius={52}
                         paddingAngle={2}
                         stroke="rgba(0,255,65,0.3)"
                       >
@@ -873,22 +877,24 @@ export default function SmartFinanceOnePageApp() {
                   </ResponsiveContainer>
                 </div>
 
-                <div className="sm:col-span-7 space-y-1.5 max-h-[170px] overflow-y-auto pr-1">
+                <div className="col-span-7 space-y-1.5 max-h-[160px] overflow-y-auto pr-1">
                   {categoryBreakdown.map((item) => (
                     <div
                       key={item.categoryId}
-                      className="flex items-center justify-between text-xs bg-black/50 border border-[#00ff41]/20 px-2.5 py-1.5"
+                      className="flex items-center justify-between text-xs bg-black/50 border border-[#00ff41]/20 px-2 py-1.5"
                     >
-                      <div className="flex items-center gap-2 min-w-0">
+                      <div className="flex items-center gap-1.5 min-w-0">
                         <span
                           className="w-4 h-4 flex items-center justify-center shrink-0"
                           style={{ color: item.color }}
                         >
                           <CategoryIcon name={item.icon} className="w-3.5 h-3.5" />
                         </span>
-                        <span className="text-[#e2ffe9] truncate">{item.name}</span>
+                        <span className="text-[#e2ffe9] truncate whitespace-nowrap">
+                          {item.name}
+                        </span>
                       </div>
-                      <span className="text-[#00ff41] font-bold shrink-0 ml-2">
+                      <span className="text-[#00ff41] font-bold shrink-0 ml-1.5">
                         {item.percentage.toFixed(0)}%
                       </span>
                     </div>

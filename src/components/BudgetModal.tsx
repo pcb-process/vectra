@@ -68,36 +68,29 @@ export function BudgetModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-3">
-      <div className="matrix-card-intense w-full max-w-md p-4 sm:p-5 relative">
+      <div className="matrix-card-intense w-full max-w-md p-3.5 sm:p-5 relative">
         <button
           onClick={onClose}
-          className="absolute top-3.5 right-3.5 w-9 h-9 flex items-center justify-center text-[#00ff41]/80 hover:text-[#00ff41] hover:bg-[#00ff41]/15 border border-[#00ff41]/30 transition-colors cursor-pointer"
+          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center text-[#00ff41]/80 hover:text-[#00ff41] hover:bg-[#00ff41]/15 border border-[#00ff41]/30 transition-colors cursor-pointer"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
 
-        <div className="flex items-center gap-2.5 mb-4 pr-10">
-          <div className="w-8 h-8 bg-[#00ff41]/15 border border-[#00ff41]/60 flex items-center justify-center text-[#00ff41] shrink-0">
-            <Target className="w-4 h-4" />
-          </div>
-          <div className="min-w-0">
-            <h2 className="text-base font-bold matrix-text-glow-lg truncate">
-              ตั้งงบประมาณรายเดือน
-            </h2>
-            <p className="text-[11px] text-[#80ff9e]/70">
-              กำหนดวงเงินและเปอร์เซ็นต์แจ้งเตือนตามหมวดหมู่
-            </p>
-          </div>
+        <div className="flex items-center gap-2 mb-3 pr-10">
+          <Target className="w-4 h-4 text-[#00ff41] shrink-0" />
+          <h2 className="text-sm sm:text-base font-bold matrix-text-glow-lg truncate">
+            ตั้งงบประมาณรายเดือน
+          </h2>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Category Selection Grid */}
+        <form onSubmit={handleSubmit} className="space-y-3">
+          {/* Category Selection Grid (Single-Line Pills) */}
           <div>
-            <label className="flex items-center gap-1.5 text-xs font-semibold text-[#80ff9e] mb-2">
-              <Layers className="w-3.5 h-3.5 text-[#00ff41]" />
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-[#80ff9e] mb-1.5">
+              <Layers className="w-3.5 h-3.5 text-[#00ff41] shrink-0" />
               <span>หมวดหมู่รายจ่าย</span>
             </label>
-            <div className="grid grid-cols-2 gap-2 max-h-[210px] overflow-y-auto pr-1">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
               {expenseCategories.map((cat) => {
                 const selected = cat.id === categoryId;
                 return (
@@ -105,14 +98,14 @@ export function BudgetModal({
                     key={cat.id}
                     type="button"
                     onClick={() => setCategoryId(cat.id)}
-                    className={`flex items-center gap-2 p-2.5 min-h-[44px] border text-left transition-all cursor-pointer ${
+                    className={`flex items-center gap-2 px-2.5 h-9 border text-left transition-all cursor-pointer min-w-0 ${
                       selected
                         ? "bg-[#00ff41]/20 border-[#00ff41] text-white"
                         : "bg-black/60 border-[#00ff41]/25 text-[#b9ffce]/80 hover:border-[#00ff41]/60"
                     }`}
                   >
                     <div
-                      className="w-6 h-6 flex items-center justify-center shrink-0"
+                      className="w-5 h-5 flex items-center justify-center shrink-0"
                       style={{
                         backgroundColor: `${cat.color}20`,
                         color: cat.color,
@@ -121,18 +114,20 @@ export function BudgetModal({
                     >
                       <CategoryIcon name={cat.icon} className="w-3.5 h-3.5" />
                     </div>
-                    <span className="text-[11px] font-bold truncate">{cat.name}</span>
+                    <span className="text-xs font-bold truncate whitespace-nowrap">
+                      {cat.name}
+                    </span>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="flex items-center gap-1.5 text-xs font-semibold text-[#80ff9e] mb-1.5">
-                <Coins className="w-3.5 h-3.5 text-[#00ff41]" />
-                <span>วงเงินงบ (บาท)</span>
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="min-w-0">
+              <label className="flex items-center gap-1 text-xs font-semibold text-[#80ff9e] mb-1 truncate">
+                <Coins className="w-3.5 h-3.5 text-[#00ff41] shrink-0" />
+                <span className="truncate">วงเงินงบ (฿)</span>
               </label>
               <input
                 type="number"
@@ -141,14 +136,14 @@ export function BudgetModal({
                 required
                 value={amountLimit}
                 onChange={(e) => setAmountLimit(e.target.value)}
-                className="w-full h-10 px-3 matrix-input text-sm font-bold"
+                className="w-full h-9 px-2.5 matrix-input text-sm font-bold"
               />
             </div>
 
-            <div>
-              <label className="flex items-center gap-1.5 text-xs font-semibold text-[#80ff9e] mb-1.5">
-                <BellRing className="w-3.5 h-3.5 text-[#00ff41]" />
-                <span>แจ้งเตือนที่ (%)</span>
+            <div className="min-w-0">
+              <label className="flex items-center gap-1 text-xs font-semibold text-[#80ff9e] mb-1 truncate">
+                <BellRing className="w-3.5 h-3.5 text-[#00ff41] shrink-0" />
+                <span className="truncate">แจ้งเตือน (%)</span>
               </label>
               <input
                 type="number"
@@ -157,26 +152,26 @@ export function BudgetModal({
                 required
                 value={alertThreshold}
                 onChange={(e) => setAlertThreshold(e.target.value)}
-                className="w-full h-10 px-3 matrix-input text-sm font-bold"
+                className="w-full h-9 px-2.5 matrix-input text-sm font-bold"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:flex sm:items-center sm:justify-end gap-2.5 pt-2">
+          <div className="grid grid-cols-2 sm:flex sm:items-center sm:justify-end gap-2 pt-1">
             <button
               type="button"
               onClick={onClose}
-              className="h-10 px-4 matrix-btn-outline text-xs font-bold flex items-center justify-center cursor-pointer"
+              className="h-9 px-4 matrix-btn-outline text-xs font-bold flex items-center justify-center whitespace-nowrap cursor-pointer"
             >
               ยกเลิก
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="h-10 px-5 matrix-btn-glow text-xs flex items-center justify-center gap-1.5 cursor-pointer"
+              className="h-9 px-4 matrix-btn-glow text-xs flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
             >
-              <Check className="w-4 h-4 stroke-[2.5]" />
-              <span>บันทึกงบประมาณ</span>
+              <Check className="w-3.5 h-3.5 stroke-[2.5] shrink-0" />
+              <span>บันทึกงบ</span>
             </button>
           </div>
         </form>

@@ -101,78 +101,91 @@ export function TransactionModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-3">
-      <div className="matrix-card-intense w-full max-w-lg p-4 sm:p-5 relative max-h-[92vh] overflow-y-auto">
+      <div className="matrix-card-intense w-full max-w-md p-3.5 sm:p-5 relative max-h-[94vh] overflow-y-auto">
         <button
           onClick={onClose}
-          className="absolute top-3.5 right-3.5 w-9 h-9 flex items-center justify-center text-[#00ff41]/80 hover:text-[#00ff41] hover:bg-[#00ff41]/15 border border-[#00ff41]/30 transition-colors cursor-pointer"
+          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center text-[#00ff41]/80 hover:text-[#00ff41] hover:bg-[#00ff41]/15 border border-[#00ff41]/30 transition-colors cursor-pointer"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
 
-        <div className="flex items-center gap-2.5 mb-1 pr-10">
-          <Wallet className="w-5 h-5 text-[#00ff41] shrink-0" />
-          <h2 className="text-base sm:text-lg font-bold matrix-text-glow-lg truncate">
-            {editingTransaction ? "แก้ไขรายการรับ-จ่าย" : "บันทึกรายการรับ-จ่ายใหม่"}
+        <div className="flex items-center gap-2 mb-3 pr-10">
+          <Wallet className="w-4 h-4 text-[#00ff41] shrink-0" />
+          <h2 className="text-sm sm:text-base font-bold matrix-text-glow-lg truncate">
+            {editingTransaction ? "แก้ไขรายการรับ-จ่าย" : "บันทึกรายการรับ-จ่าย"}
           </h2>
         </div>
-        <p className="text-xs text-[#80ff9e]/70 mb-4">
-          เลือกประเภทรายการ หมวดหมู่ และจำนวนเงินเพื่อบันทึกข้อมูล
-        </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Type Toggle */}
-          <div className="grid grid-cols-2 gap-2 p-1 bg-black/90 border border-[#00ff41]/40">
+        <form onSubmit={handleSubmit} className="space-y-3">
+          {/* Type Toggle (Single-Line) */}
+          <div className="grid grid-cols-2 gap-1.5 p-1 bg-black/90 border border-[#00ff41]/40">
             <button
               type="button"
               onClick={() => handleTypeChange("expense")}
-              className={`h-10 text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              className={`h-9 px-2 text-xs font-extrabold whitespace-nowrap transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 type === "expense"
                   ? "bg-[#ff0055] text-white"
                   : "text-[#80ff9e]/60 hover:text-[#00ff41]"
               }`}
             >
-              <ArrowDownCircle className="w-4 h-4" />
-              <span>รายจ่าย (Expense)</span>
+              <ArrowDownCircle className="w-3.5 h-3.5 shrink-0" />
+              <span>รายจ่าย</span>
             </button>
             <button
               type="button"
               onClick={() => handleTypeChange("income")}
-              className={`h-10 text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              className={`h-9 px-2 text-xs font-extrabold whitespace-nowrap transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 type === "income"
                   ? "bg-[#00ff41] text-black"
                   : "text-[#80ff9e]/60 hover:text-[#00ff41]"
               }`}
             >
-              <ArrowUpCircle className="w-4 h-4" />
-              <span>รายรับ (Income)</span>
+              <ArrowUpCircle className="w-3.5 h-3.5 shrink-0" />
+              <span>รายรับ</span>
             </button>
           </div>
 
-          {/* Amount Input */}
-          <div>
-            <label className="flex items-center gap-1.5 text-xs font-semibold text-[#80ff9e] mb-1.5">
-              <Banknote className="w-3.5 h-3.5 text-[#00ff41]" />
-              <span>จำนวนเงิน (บาท) *</span>
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              min="0.01"
-              required
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="0.00"
-              className="w-full h-11 px-3.5 matrix-input text-lg font-extrabold matrix-text-glow-lg"
-            />
+          {/* Amount + Date Side-by-Side (Saves Vertical Height) */}
+          <div className="grid grid-cols-12 gap-2.5">
+            <div className="col-span-6 min-w-0">
+              <label className="flex items-center gap-1 text-xs font-semibold text-[#80ff9e] mb-1 truncate">
+                <Banknote className="w-3.5 h-3.5 text-[#00ff41] shrink-0" />
+                <span className="truncate">จำนวนเงิน (฿) *</span>
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0.01"
+                required
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="0.00"
+                className="w-full h-9 px-2.5 matrix-input text-sm font-extrabold matrix-text-glow-lg"
+              />
+            </div>
+
+            <div className="col-span-6 min-w-0">
+              <label className="flex items-center gap-1 text-xs font-semibold text-[#80ff9e] mb-1 truncate">
+                <Calendar className="w-3.5 h-3.5 text-[#00ff41] shrink-0" />
+                <span className="truncate">วันที่ *</span>
+              </label>
+              <input
+                type="date"
+                required
+                value={transactionDate}
+                onChange={(e) => setTransactionDate(e.target.value)}
+                className="w-full h-9 px-2 matrix-input text-xs font-semibold"
+              />
+            </div>
           </div>
 
-          {/* Category Grid */}
+          {/* Category Grid (Single-Line Pills, No Multi-Line Wrapping) */}
           <div>
-            <label className="flex items-center gap-1.5 text-xs font-semibold text-[#80ff9e] mb-2">
-              <Layers className="w-3.5 h-3.5 text-[#00ff41]" />
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-[#80ff9e] mb-1.5">
+              <Layers className="w-3.5 h-3.5 text-[#00ff41] shrink-0" />
               <span>เลือกหมวดหมู่ *</span>
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
               {filteredCategories.map((cat) => {
                 const selected = cat.id === categoryId;
                 return (
@@ -180,23 +193,23 @@ export function TransactionModal({
                     key={cat.id}
                     type="button"
                     onClick={() => setCategoryId(cat.id)}
-                    className={`flex items-center gap-2 p-2.5 min-h-[44px] border text-left transition-all cursor-pointer ${
+                    className={`flex items-center gap-2 px-2.5 h-9 border text-left transition-all cursor-pointer min-w-0 ${
                       selected
                         ? "bg-[#00ff41]/20 border-[#00ff41] text-white shadow-[0_0_8px_rgba(0,255,65,0.35)]"
                         : "bg-black/60 border-[#00ff41]/25 text-[#b9ffce]/80 hover:border-[#00ff41]/60"
                     }`}
                   >
                     <div
-                      className="w-7 h-7 flex items-center justify-center shrink-0"
+                      className="w-5 h-5 flex items-center justify-center shrink-0"
                       style={{
                         backgroundColor: `${cat.color}20`,
                         color: cat.color,
                         border: `1px solid ${cat.color}66`,
                       }}
                     >
-                      <CategoryIcon name={cat.icon} className="w-4 h-4" />
+                      <CategoryIcon name={cat.icon} className="w-3.5 h-3.5" />
                     </div>
-                    <span className="text-[11px] font-bold leading-tight line-clamp-2">
+                    <span className="text-xs font-bold truncate whitespace-nowrap">
                       {cat.name}
                     </span>
                   </button>
@@ -205,59 +218,43 @@ export function TransactionModal({
             </div>
           </div>
 
-          {/* Date & Note */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="flex items-center gap-1.5 text-xs font-semibold text-[#80ff9e] mb-1.5">
-                <Calendar className="w-3.5 h-3.5 text-[#00ff41]" />
-                <span>วันที่ทำรายการ *</span>
-              </label>
-              <input
-                type="date"
-                required
-                value={transactionDate}
-                onChange={(e) => setTransactionDate(e.target.value)}
-                className="w-full h-10 px-3 matrix-input text-xs font-semibold"
-              />
-            </div>
-
-            <div>
-              <label className="flex items-center gap-1.5 text-xs font-semibold text-[#80ff9e] mb-1.5">
-                <FileText className="w-3.5 h-3.5 text-[#00ff41]" />
-                <span>บันทึกช่วยจำ (Note)</span>
-              </label>
-              <input
-                type="text"
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                placeholder="เช่น ค่ากาแฟ, เงินเดือน..."
-                className="w-full h-10 px-3 matrix-input text-xs"
-              />
-            </div>
+          {/* Note Input */}
+          <div>
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-[#80ff9e] mb-1">
+              <FileText className="w-3.5 h-3.5 text-[#00ff41] shrink-0" />
+              <span>บันทึกช่วยจำ</span>
+            </label>
+            <input
+              type="text"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="เช่น ค่ากาแฟ, เงินเดือน..."
+              className="w-full h-9 px-3 matrix-input text-xs"
+            />
           </div>
 
           {/* Actions */}
-          <div className="grid grid-cols-2 sm:flex sm:items-center sm:justify-end gap-2.5 pt-2">
+          <div className="grid grid-cols-2 sm:flex sm:items-center sm:justify-end gap-2 pt-1">
             <button
               type="button"
               onClick={onClose}
-              className="h-10 px-4 matrix-btn-outline text-xs font-bold flex items-center justify-center cursor-pointer"
+              className="h-9 px-4 matrix-btn-outline text-xs font-bold flex items-center justify-center whitespace-nowrap cursor-pointer"
             >
               ยกเลิก
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="h-10 px-5 matrix-btn-glow text-xs flex items-center justify-center gap-2 cursor-pointer"
+              className="h-9 px-4 matrix-btn-glow text-xs flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
             >
               {editingTransaction ? (
                 <>
-                  <Save className="w-4 h-4" />
-                  <span>บันทึกการแก้ไข</span>
+                  <Save className="w-3.5 h-3.5 shrink-0" />
+                  <span>บันทึก</span>
                 </>
               ) : (
                 <>
-                  <PlusCircle className="w-4 h-4" />
+                  <PlusCircle className="w-3.5 h-3.5 shrink-0" />
                   <span>เพิ่มรายการ</span>
                 </>
               )}
