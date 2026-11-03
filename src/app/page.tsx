@@ -545,8 +545,8 @@ export default function SmartFinanceOnePageApp() {
 
       {/* Minimal 1-Page Container */}
       <div className="relative z-10 max-w-6xl mx-auto px-3 sm:px-5 pt-3 space-y-3.5">
-        {/* ==================== MINIMAL RESPONSIVE HEADER ==================== */}
-        <header className="matrix-card p-3 sm:px-4 sm:py-3 space-y-2.5 sm:space-y-0 sm:flex sm:items-center sm:justify-between gap-3">
+        {/* ==================== MINIMAL RESPONSIVE STICKY HEADER ==================== */}
+        <header className="sticky top-2 z-30 matrix-card bg-[#021206]/95 backdrop-blur-md p-2.5 sm:px-4 sm:py-3 space-y-2 sm:space-y-0 sm:flex sm:items-center sm:justify-between gap-3 shadow-[0_6px_20px_rgba(0,0,0,0.85)]">
           {/* Top Row on Mobile: Brand + Utility Icons (Auth & Refresh) */}
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-3 min-w-0">
