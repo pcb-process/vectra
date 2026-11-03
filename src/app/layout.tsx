@@ -5,6 +5,13 @@ export const metadata: Metadata = {
   title: "VECTRA Finance | ระบบจัดการการเงินส่วนบุคคลอัจฉริยะ",
   description:
     "VECTRA Finance — แอปวางแผนการเงินส่วนบุคคล บันทึกรายรับ-รายจ่าย ตั้งงบประมาณพร้อมแจ้งเตือน และวิเคราะห์กระแสเงินสดในหน้าเดียว",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: ["/icon.svg"],
+    apple: ["/icon.svg"],
+  },
 };
 
 export const viewport: Viewport = {
