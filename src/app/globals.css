@@ -245,3 +245,21 @@ input[type="month"]::-webkit-calendar-picker-indicator {
 ::-webkit-scrollbar-thumb:hover {
   background: #00ff41;
 }
+
+/* Prevent iOS Safari / Mobile Browsers from Auto-Zooming on Input Focus */
+input,
+select,
+textarea,
+button {
+  touch-action: manipulation;
+}
+
+@media screen and (max-width: 640px) {
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  textarea {
+    font-size: 16px !important;
+  }
+}
