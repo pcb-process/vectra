@@ -47,7 +47,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
           onClose();
         } else {
           setInfoMsg(
-            "สมัครสมาชิกสำเร็จ! กรุณาตรวจสอบอีเมลเพื่อยืนยันตัวตน หรือเข้าสู่ระบบได้ทันทีหากปิดการยืนยันอีเมลไว้"
+            "สมัครสมาชิกสำเร็จ! กรุณาตรวจสอบอีเมลเพื่อยืนยันตัวตน หรือเข้าสู่ระบบได้ทันที"
           );
         }
       }
@@ -61,31 +61,31 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
+      <div className="matrix-card-intense rounded-2xl w-full max-w-md p-6 relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+          className="absolute top-4 right-4 p-2 rounded-lg text-[#00ff41]/70 hover:text-[#00ff41] hover:bg-[#00ff41]/10 transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-11 h-11 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-11 h-11 rounded-2xl bg-[#00ff41]/15 border border-[#00ff41] flex items-center justify-center text-[#00ff41] shadow-[0_0_20px_rgba(0,255,65,0.6)]">
             <Cloud className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white">
-              {mode === "login" ? "เข้าสู่ระบบ Supabase Cloud" : "สร้างบัญชีใหม่ (ฟรี)"}
+            <h2 className="text-lg font-extrabold matrix-text-glow-lg">
+              {mode === "login" ? "MATRIX_AUTH // เข้าสู่ระบบ" : "NEW_OPERATOR // สมัครสมาชิก"}
             </h2>
-            <p className="text-xs text-slate-400">
-              ซิงค์ข้อมูลรายรับ-รายจ่ายและงบประมาณข้ามอุปกรณ์อย่างปลอดภัยด้วย RLS
+            <p className="text-xs text-[#80ff9e]/80">
+              เชื่อมต่อฐานข้อมูล Supabase Cloud พร้อมระบบป้องกันข้อมูล RLS
             </p>
           </div>
         </div>
 
         {/* Mode Switcher */}
-        <div className="grid grid-cols-2 gap-2 p-1 bg-slate-800 rounded-xl mb-5">
+        <div className="grid grid-cols-2 gap-2 p-1 bg-black/80 border border-[#00ff41]/40 rounded-xl mb-5">
           <button
             type="button"
             onClick={() => {
@@ -93,13 +93,13 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
               setErrorMsg(null);
               setInfoMsg(null);
             }}
-            className={`py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+            className={`py-2 text-xs font-extrabold rounded-lg transition-all cursor-pointer ${
               mode === "login"
-                ? "bg-emerald-500 text-slate-950 shadow"
-                : "text-slate-400 hover:text-white"
+                ? "matrix-btn-glow"
+                : "text-[#80ff9e]/70 hover:text-[#00ff41]"
             }`}
           >
-            เข้าสู่ระบบ (Sign In)
+            เข้าสู่ระบบ (SIGN IN)
           </button>
           <button
             type="button"
@@ -108,54 +108,54 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
               setErrorMsg(null);
               setInfoMsg(null);
             }}
-            className={`py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+            className={`py-2 text-xs font-extrabold rounded-lg transition-all cursor-pointer ${
               mode === "register"
-                ? "bg-emerald-500 text-slate-950 shadow"
-                : "text-slate-400 hover:text-white"
+                ? "matrix-btn-glow"
+                : "text-[#80ff9e]/70 hover:text-[#00ff41]"
             }`}
           >
-            สมัครสมาชิกใหม่ (Sign Up)
+            สมัครสมาชิก (SIGN UP)
           </button>
         </div>
 
         {errorMsg && (
-          <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-2.5 text-xs text-rose-300">
-            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+          <div className="mb-4 p-3 rounded-xl matrix-card-danger flex items-start gap-2.5 text-xs text-[#ff80ab]">
+            <AlertCircle className="w-4 h-4 text-[#ff0055] shrink-0 mt-0.5" />
             <span>{errorMsg}</span>
           </div>
         )}
 
         {infoMsg && (
-          <div className="mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-start gap-2.5 text-xs text-emerald-300">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+          <div className="mb-4 p-3 rounded-xl matrix-card flex items-start gap-2.5 text-xs text-[#b9ffce]">
+            <CheckCircle2 className="w-4 h-4 text-[#00ff41] shrink-0 mt-0.5" />
             <span>{infoMsg}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">
-              อีเมล (Email)
+            <label className="block text-xs font-semibold text-[#80ff9e] mb-1.5">
+              อีเมล (OPERATOR_EMAIL)
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Mail className="w-4 h-4 text-[#00ff41] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500"
+                placeholder="neo@matrix.io"
+                className="w-full pl-10 pr-4 py-2.5 matrix-input rounded-xl text-sm"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">
-              รหัสผ่าน (อย่างน้อย 6 ตัวอักษร)
+            <label className="block text-xs font-semibold text-[#80ff9e] mb-1.5">
+              รหัสผ่าน (ACCESS_CODE อย่างน้อย 6 ตัวอักษร)
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Lock className="w-4 h-4 text-[#00ff41] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="password"
                 required
@@ -163,7 +163,7 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500"
+                className="w-full pl-10 pr-4 py-2.5 matrix-input rounded-xl text-sm"
               />
             </div>
           </div>
@@ -171,27 +171,27 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 disabled:opacity-50 text-slate-950 font-semibold text-sm transition-all cursor-pointer"
+            className="w-full py-3 rounded-xl matrix-btn-glow text-sm cursor-pointer disabled:opacity-50"
           >
             {loading
-              ? "กำลังดำเนินการ..."
+              ? "CONNECTING TO MATRIX..."
               : mode === "login"
-              ? "เข้าสู่ระบบ"
-              : "สมัครสมาชิกและเริ่มใช้งาน"}
+              ? "JACK IN // เข้าสู่ระบบ"
+              : "INITIALIZE // สมัครสมาชิก"}
           </button>
         </form>
 
-        <div className="mt-5 pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+        <div className="mt-5 pt-4 border-t border-[#00ff41]/30 flex items-center justify-between text-xs text-[#80ff9e]/80">
           <div className="flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>หรือใช้งานต่อในโหมดตัวอย่าง</span>
+            <Sparkles className="w-3.5 h-3.5 text-[#00ff41]" />
+            <span>หรือทดสอบต่อในโหมดจำลอง</span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-emerald-400 hover:underline font-medium cursor-pointer"
+            className="matrix-text-glow hover:underline font-bold cursor-pointer"
           >
-            ใช้ Demo Mode ต่อ
+            SIMULATION MODE →
           </button>
         </div>
       </div>

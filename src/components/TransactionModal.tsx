@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { X, PlusCircle, Save } from "lucide-react";
+import { X, PlusCircle, Save, Terminal } from "lucide-react";
 import { Category, Transaction, TransactionType } from "@/types/finance";
 import { CategoryIcon } from "./CategoryIcon";
 
@@ -89,53 +89,56 @@ export function TransactionModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-3">
+      <div className="matrix-card-intense rounded-2xl w-full max-w-lg p-5 relative max-h-[92vh] overflow-y-auto">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+          className="absolute top-4 right-4 p-2 rounded-lg text-[#00ff41]/70 hover:text-[#00ff41] hover:bg-[#00ff41]/10 transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <h2 className="text-lg font-bold text-white mb-1">
-          {editingTransaction ? "แก้ไขรายการธุรกรรม" : "บันทึกรายการรับ-จ่ายใหม่"}
-        </h2>
-        <p className="text-xs text-slate-400 mb-5">
-          เลือกประเภทรายการ หมวดหมู่ และจำนวนเงินเพื่ออัปเดตสรุปผลทันที
+        <div className="flex items-center gap-2.5 mb-1">
+          <Terminal className="w-5 h-5 text-[#00ff41] drop-shadow-[0_0_8px_#00ff41]" />
+          <h2 className="text-lg font-bold matrix-text-glow-lg">
+            {editingTransaction ? "EDIT_TRANSACTION // แก้ไขรายการ" : "NEW_TRANSACTION // บันทึกรายการ"}
+          </h2>
+        </div>
+        <p className="text-xs text-[#80ff9e]/70 mb-4">
+          เลือกประเภทรายการ หมวดหมู่ และจำนวนเงินเพื่ออัปเดตเข้าสู่ระบบ Matrix ทันที
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Type Toggle */}
-          <div className="grid grid-cols-2 gap-2 p-1 bg-slate-950 border border-slate-800 rounded-xl">
+          <div className="grid grid-cols-2 gap-2 p-1.5 bg-black/90 border border-[#00ff41]/40 rounded-xl">
             <button
               type="button"
               onClick={() => handleTypeChange("expense")}
-              className={`py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              className={`py-2.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
                 type === "expense"
-                  ? "bg-rose-500 text-white shadow-lg shadow-rose-500/25"
-                  : "text-slate-400 hover:text-white"
+                  ? "bg-[#ff0055] text-white shadow-[0_0_20px_rgba(255,0,85,0.85)]"
+                  : "text-[#80ff9e]/60 hover:text-[#00ff41]"
               }`}
             >
-              รายจ่าย (Expense)
+              [ - ] รายจ่าย (EXPENSE)
             </button>
             <button
               type="button"
               onClick={() => handleTypeChange("income")}
-              className={`py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              className={`py-2.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
                 type === "income"
-                  ? "bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/25"
-                  : "text-slate-400 hover:text-white"
+                  ? "bg-[#00ff41] text-black shadow-[0_0_24px_rgba(0,255,65,0.95)]"
+                  : "text-[#80ff9e]/60 hover:text-[#00ff41]"
               }`}
             >
-              รายรับ (Income)
+              [ + ] รายรับ (INCOME)
             </button>
           </div>
 
           {/* Amount Input */}
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">
-              จำนวนเงิน (บาท) *
+            <label className="block text-xs font-semibold text-[#80ff9e] mb-1.5">
+              จำนวนเงิน (THB) *
             </label>
             <input
               type="number"
@@ -145,14 +148,14 @@ export function TransactionModal({
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-xl font-bold text-white focus:outline-none focus:border-emerald-500"
+              className="w-full px-4 py-3 matrix-input rounded-xl text-xl font-extrabold matrix-text-glow-lg"
             />
           </div>
 
           {/* Category Grid */}
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-2">
-              เลือกหมวดหมู่ *
+            <label className="block text-xs font-semibold text-[#80ff9e] mb-2">
+              เลือกหมวดหมู่ (CATEGORY_NODE) *
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {filteredCategories.map((cat) => {
@@ -162,22 +165,23 @@ export function TransactionModal({
                     key={cat.id}
                     type="button"
                     onClick={() => setCategoryId(cat.id)}
-                    className={`flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                    className={`flex items-center gap-2 p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                       selected
-                        ? "bg-slate-800 border-emerald-500 text-white ring-1 ring-emerald-500/50"
-                        : "bg-slate-950/60 border-slate-800 text-slate-300 hover:bg-slate-800/50"
+                        ? "bg-[#00ff41]/20 border-[#00ff41] text-white shadow-[0_0_16px_rgba(0,255,65,0.6)]"
+                        : "bg-black/60 border-[#00ff41]/25 text-[#b9ffce]/80 hover:border-[#00ff41]/60"
                     }`}
                   >
                     <div
-                      className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                      className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
                       style={{
                         backgroundColor: `${cat.color}25`,
                         color: cat.color,
+                        boxShadow: selected ? `0 0 12px ${cat.color}` : "none",
                       }}
                     >
                       <CategoryIcon name={cat.icon} className="w-4 h-4" />
                     </div>
-                    <span className="text-xs font-medium leading-tight line-clamp-2">
+                    <span className="text-[11px] font-bold leading-tight line-clamp-2">
                       {cat.name}
                     </span>
                   </button>
@@ -187,9 +191,9 @@ export function TransactionModal({
           </div>
 
           {/* Date & Note */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold text-[#80ff9e] mb-1.5">
                 วันที่ทำรายการ *
               </label>
               <input
@@ -197,20 +201,20 @@ export function TransactionModal({
                 required
                 value={transactionDate}
                 onChange={(e) => setTransactionDate(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500"
+                className="w-full px-3.5 py-2.5 matrix-input rounded-xl text-xs font-semibold"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                บันทึกช่วยจำ (Note)
+              <label className="block text-xs font-semibold text-[#80ff9e] mb-1.5">
+                บันทึกช่วยจำ (NOTE_LOG)
               </label>
               <input
                 type="text"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="เช่น ค่าอาหารกลางวัน, ค่าน้ำมัน..."
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500"
+                placeholder="เช่น ค่ากาแฟ, เงินเดือน..."
+                className="w-full px-3.5 py-2.5 matrix-input rounded-xl text-xs"
               />
             </div>
           </div>
@@ -220,14 +224,14 @@ export function TransactionModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold cursor-pointer"
+              className="px-4 py-2.5 rounded-xl matrix-btn-outline text-xs font-bold cursor-pointer"
             >
               ยกเลิก
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer"
+              className="px-5 py-2.5 rounded-xl matrix-btn-glow text-xs flex items-center gap-2 cursor-pointer"
             >
               {editingTransaction ? (
                 <>
@@ -237,7 +241,7 @@ export function TransactionModal({
               ) : (
                 <>
                   <PlusCircle className="w-4 h-4" />
-                  <span>เพิ่มรายการ</span>
+                  <span>EXECUTE // เพิ่มรายการ</span>
                 </>
               )}
             </button>

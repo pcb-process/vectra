@@ -11,13 +11,77 @@ import {
   Transaction,
   TransactionType,
 } from "@/types/finance";
-import { ActiveTab, Navbar } from "@/components/Navbar";
-import { DashboardView } from "@/components/DashboardView";
-import { TransactionList } from "@/components/TransactionList";
-import { BudgetManager } from "@/components/BudgetManager";
+import { CategoryIcon } from "@/components/CategoryIcon";
 import { TransactionModal } from "@/components/TransactionModal";
 import { AuthModal } from "@/components/AuthModal";
-import { Cloud, Database, RefreshCw, Sparkles } from "lucide-react";
+import { MatrixRainBackground } from "@/components/MatrixRainBackground";
+import {
+  TrendingUp,
+  TrendingDown,
+  Wallet,
+  PiggyBank,
+  AlertTriangle,
+  Plus,
+  Search,
+  Pencil,
+  Trash2,
+  Cloud,
+  Sparkles,
+  LogIn,
+  LogOut,
+  RefreshCw,
+  Database,
+  Target,
+  Terminal,
+  CheckCircle2,
+  Zap,
+  Calendar,
+} from "lucide-react";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
+
+const THAI_MONTHS = [
+  "ม.ค.",
+  "ก.พ.",
+  "มี.ค.",
+  "เม.ย.",
+  "พ.ค.",
+  "มิ.ย.",
+  "ก.ค.",
+  "ส.ค.",
+  "ก.ย.",
+  "ต.ค.",
+  "พ.ย.",
+  "ธ.ค.",
+];
+
+function formatThaiMonthYear(monthYear: string): string {
+  const [yearStr, monthStr] = monthYear.split("-");
+  const year = parseInt(yearStr, 10);
+  const monthIdx = parseInt(monthStr, 10) - 1;
+  if (isNaN(year) || monthIdx < 0 || monthIdx > 11) return monthYear;
+  return `${THAI_MONTHS[monthIdx]} ${year + 543}`;
+}
+
+function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat("th-TH", {
+    style: "currency",
+    currency: "THB",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(amount);
+}
 
 function getCurrentYearMonth(): string {
   const now = new Date();
@@ -37,8 +101,7 @@ function getMonthDateRange(monthYear: string): { start: string; end: string } {
   };
 }
 
-export default function SmartFinancePage() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>("dashboard");
+export default function MatrixOnePageFinanceApp() {
   const [selectedMonth, setSelectedMonth] = useState<string>(getCurrentYearMonth);
 
   const [userId, setUserId] = useState<string | null>(null);
@@ -49,11 +112,43 @@ export default function SmartFinancePage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [budgets, setBudgets] = useState<Budget[]>([]);
 
+  // Modal states
   const [isTxModalOpen, setIsTxModalOpen] = useState(false);
   const [editingTx, setEditingTx] = useState<Transaction | null>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
+  // 1-Page Quick Add inline state
+  const [quickType, setQuickType] = useState<TransactionType>("expense");
+  const [quickCategoryId, setQuickCategoryId] = useState<number>(8);
+  const [quickAmount, setQuickAmount] = useState<string>("");
+  const [quickNote, setQuickNote] = useState<string>("");
+  const [quickDate, setQuickDate] = useState<string>(() =>
+    new Date().toISOString().slice(0, 10)
+  );
+  const [quickSaving, setQuickSaving] = useState<boolean>(false);
+
+  // 1-Page Inline Budget state
+  const [budgetCatId, setBudgetCatId] = useState<number>(8);
+  const [budgetLimit, setBudgetLimit] = useState<string>("6000");
+  const [budgetThreshold, setBudgetThreshold] = useState<string>("80");
+  const [budgetSaving, setBudgetSaving] = useState<boolean>(false);
+
+  // 1-Page Transaction Filter state
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [typeFilter, setTypeFilter] = useState<"all" | "income" | "expense">("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+
   const isDemoMode = !userId;
+
+  // Sync quickDate when month changes
+  useEffect(() => {
+    const currentYM = getCurrentYearMonth();
+    if (selectedMonth === currentYM) {
+      setQuickDate(new Date().toISOString().slice(0, 10));
+    } else {
+      setQuickDate(`${selectedMonth}-01`);
+    }
+  }, [selectedMonth]);
 
   // Check Supabase auth session
   useEffect(() => {
@@ -80,20 +175,24 @@ export default function SmartFinancePage() {
     try {
       const supabase = createClient();
 
-      // Fetch categories from Supabase (available to anon + authenticated)
       const { data: catData } = await supabase
         .from("finance_categories")
         .select("*")
         .order("id", { ascending: true });
 
       if (catData && catData.length > 0) {
-        setCategories(catData as Category[]);
+        // Override with Matrix neon palette for visual punch
+        const neonMap = new Map(DEFAULT_CATEGORIES.map((c) => [c.name, c.color]));
+        const enhanced = (catData as Category[]).map((c) => ({
+          ...c,
+          color: neonMap.get(c.name) || c.color || "#00ff41",
+        }));
+        setCategories(enhanced);
       } else {
         setCategories(DEFAULT_CATEGORIES);
       }
 
       if (userId) {
-        // Cloud mode: load user's transactions & budgets from Supabase
         const { start, end } = getMonthDateRange(selectedMonth);
 
         const [txRes, budgetRes] = await Promise.all([
@@ -116,7 +215,6 @@ export default function SmartFinancePage() {
         setTransactions((txRes.data as Transaction[]) || []);
         setBudgets((budgetRes.data as Budget[]) || []);
       } else {
-        // Demo Mode: load from localStorage or seed initial demo data for the selectedMonth
         const txKey = `spf_demo_tx_${selectedMonth}`;
         const bgKey = `spf_demo_bg_${selectedMonth}`;
         const savedTx = localStorage.getItem(txKey);
@@ -214,6 +312,27 @@ export default function SmartFinancePage() {
     }
   };
 
+  // Inline Quick Add submit
+  const handleQuickAddSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const num = parseFloat(quickAmount);
+    if (isNaN(num) || num <= 0) return;
+    setQuickSaving(true);
+    try {
+      await handleSaveTransaction({
+        type: quickType,
+        category_id: quickCategoryId,
+        amount: num,
+        note: quickNote.trim(),
+        transaction_date: quickDate,
+      });
+      setQuickAmount("");
+      setQuickNote("");
+    } finally {
+      setQuickSaving(false);
+    }
+  };
+
   // Delete transaction
   const handleDeleteTransaction = async (id: number) => {
     if (userId) {
@@ -233,57 +352,61 @@ export default function SmartFinancePage() {
   };
 
   // Upsert budget
-  const handleSaveBudget = async (payload: {
-    category_id: number;
-    month_year: string;
-    amount_limit: number;
-    alert_threshold: number;
-  }) => {
-    if (userId) {
-      const supabase = createClient();
-      await supabase.from("finance_budgets").upsert(
-        {
-          user_id: userId,
-          category_id: payload.category_id,
-          month_year: payload.month_year,
-          amount_limit: payload.amount_limit,
-          alert_threshold: payload.alert_threshold,
-        },
-        { onConflict: "user_id,category_id,month_year" }
-      );
-      await loadFinanceData();
-    } else {
-      const bgKey = `spf_demo_bg_${selectedMonth}`;
-      const existingIdx = budgets.findIndex(
-        (b) =>
-          b.category_id === payload.category_id && b.month_year === payload.month_year
-      );
-      let updated: Budget[];
-      if (existingIdx >= 0) {
-        updated = budgets.map((b, i) =>
-          i === existingIdx
-            ? {
-                ...b,
-                amount_limit: payload.amount_limit,
-                alert_threshold: payload.alert_threshold,
-              }
-            : b
-        );
-      } else {
-        updated = [
-          ...budgets,
+  const handleSaveBudget = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const limitNum = parseFloat(budgetLimit);
+    const thresholdNum = parseFloat(budgetThreshold);
+    if (isNaN(limitNum) || limitNum <= 0) return;
+
+    setBudgetSaving(true);
+    try {
+      const cleanThreshold = isNaN(thresholdNum)
+        ? 80
+        : Math.min(100, Math.max(10, thresholdNum));
+
+      if (userId) {
+        const supabase = createClient();
+        await supabase.from("finance_budgets").upsert(
           {
-            id: Date.now(),
-            user_id: "demo-user",
-            category_id: payload.category_id,
-            month_year: payload.month_year,
-            amount_limit: payload.amount_limit,
-            alert_threshold: payload.alert_threshold,
+            user_id: userId,
+            category_id: budgetCatId,
+            month_year: selectedMonth,
+            amount_limit: limitNum,
+            alert_threshold: cleanThreshold,
           },
-        ];
+          { onConflict: "user_id,category_id,month_year" }
+        );
+        await loadFinanceData();
+      } else {
+        const bgKey = `spf_demo_bg_${selectedMonth}`;
+        const existingIdx = budgets.findIndex(
+          (b) => b.category_id === budgetCatId && b.month_year === selectedMonth
+        );
+        let updated: Budget[];
+        if (existingIdx >= 0) {
+          updated = budgets.map((b, i) =>
+            i === existingIdx
+              ? { ...b, amount_limit: limitNum, alert_threshold: cleanThreshold }
+              : b
+          );
+        } else {
+          updated = [
+            ...budgets,
+            {
+              id: Date.now(),
+              user_id: "demo-user",
+              category_id: budgetCatId,
+              month_year: selectedMonth,
+              amount_limit: limitNum,
+              alert_threshold: cleanThreshold,
+            },
+          ];
+        }
+        localStorage.setItem(bgKey, JSON.stringify(updated));
+        setBudgets(updated);
       }
-      localStorage.setItem(bgKey, JSON.stringify(updated));
-      setBudgets(updated);
+    } finally {
+      setBudgetSaving(false);
     }
   };
 
@@ -301,7 +424,7 @@ export default function SmartFinancePage() {
     }
   };
 
-  // Seed sample data to Supabase Cloud for signed-in user
+  // Seed sample data to Supabase Cloud
   const handleSeedCloudSampleData = async () => {
     if (!userId) return;
     setLoadingData(true);
@@ -340,133 +463,932 @@ export default function SmartFinancePage() {
     setUserEmail(null);
   };
 
-  // Count how many budgets are in warning/over state
-  const alertCount = useMemo(() => {
-    return budgets.filter((b) => {
-      const spent = transactions
-        .filter((t) => t.type === "expense" && t.category_id === b.category_id)
-        .reduce((sum, t) => sum + Number(t.amount), 0);
-      const pct = b.amount_limit > 0 ? (spent / b.amount_limit) * 100 : 0;
-      return pct >= b.alert_threshold;
-    }).length;
-  }, [budgets, transactions]);
+  // Maps & Aggregations
+  const categoryMap = useMemo(() => {
+    const map = new Map<number, Category>();
+    categories.forEach((c) => map.set(c.id, c));
+    return map;
+  }, [categories]);
 
-  const defaultDateForModal = useMemo(() => {
-    const currentYM = getCurrentYearMonth();
-    if (selectedMonth === currentYM) {
-      return new Date().toISOString().slice(0, 10);
+  const { totalIncome, totalExpense, netBalance, savingsRate } = useMemo(() => {
+    let income = 0;
+    let expense = 0;
+    for (const tx of transactions) {
+      if (tx.type === "income") income += Number(tx.amount);
+      else expense += Number(tx.amount);
     }
-    return `${selectedMonth}-01`;
-  }, [selectedMonth]);
+    const net = income - expense;
+    const rate = income > 0 ? Math.max(0, ((income - expense) / income) * 100) : 0;
+    return {
+      totalIncome: income,
+      totalExpense: expense,
+      netBalance: net,
+      savingsRate: rate,
+    };
+  }, [transactions]);
+
+  const categoryBreakdown = useMemo(() => {
+    const totals = new Map<number, number>();
+    for (const tx of transactions) {
+      if (tx.type === "expense" && tx.category_id) {
+        totals.set(tx.category_id, (totals.get(tx.category_id) || 0) + Number(tx.amount));
+      }
+    }
+    const list = Array.from(totals.entries()).map(([catId, amount]) => {
+      const cat = categoryMap.get(catId);
+      return {
+        categoryId: catId,
+        name: cat?.name || "ไม่ระบุ",
+        icon: cat?.icon || "Wallet",
+        color: cat?.color || "#00ff41",
+        amount,
+        percentage: totalExpense > 0 ? (amount / totalExpense) * 100 : 0,
+      };
+    });
+    return list.sort((a, b) => b.amount - a.amount);
+  }, [transactions, categoryMap, totalExpense]);
+
+  const dailyChartData = useMemo(() => {
+    const dayMap = new Map<string, { day: string; รายรับ: number; รายจ่าย: number }>();
+    const sorted = [...transactions].sort((a, b) =>
+      a.transaction_date.localeCompare(b.transaction_date)
+    );
+    for (const tx of sorted) {
+      const dayNum = tx.transaction_date.slice(8, 10);
+      const label = `${parseInt(dayNum, 10)}`;
+      const existing = dayMap.get(label) || { day: `${label}`, รายรับ: 0, รายจ่าย: 0 };
+      if (tx.type === "income") {
+        existing.รายรับ += Number(tx.amount);
+      } else {
+        existing.รายจ่าย += Number(tx.amount);
+      }
+      dayMap.set(label, existing);
+    }
+    return Array.from(dayMap.values());
+  }, [transactions]);
+
+  const enrichedBudgets = useMemo(() => {
+    return budgets
+      .map((b) => {
+        const cat = categoryMap.get(b.category_id);
+        const spent = transactions
+          .filter((t) => t.type === "expense" && t.category_id === b.category_id)
+          .reduce((sum, t) => sum + Number(t.amount), 0);
+        const limit = Number(b.amount_limit);
+        const pct = limit > 0 ? (spent / limit) * 100 : 0;
+        const remaining = limit - spent;
+        const status: "normal" | "warning" | "over" =
+          pct >= 100 ? "over" : pct >= Number(b.alert_threshold) ? "warning" : "normal";
+
+        return {
+          ...b,
+          cat,
+          spent,
+          limit,
+          pct,
+          remaining,
+          status,
+        };
+      })
+      .sort((a, b) => b.pct - a.pct);
+  }, [budgets, categoryMap, transactions]);
+
+  const budgetAlerts = useMemo(
+    () => enrichedBudgets.filter((b) => b.status === "over" || b.status === "warning"),
+    [enrichedBudgets]
+  );
+
+  const filteredTransactions = useMemo(() => {
+    return transactions
+      .filter((tx) => {
+        if (typeFilter !== "all" && tx.type !== typeFilter) return false;
+        if (categoryFilter !== "all" && String(tx.category_id) !== categoryFilter) {
+          return false;
+        }
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase();
+          const catName = tx.category_id
+            ? categoryMap.get(tx.category_id)?.name.toLowerCase() || ""
+            : "";
+          const noteMatch = (tx.note || "").toLowerCase().includes(q);
+          const catMatch = catName.includes(q);
+          if (!noteMatch && !catMatch) return false;
+        }
+        return true;
+      })
+      .sort((a, b) => b.transaction_date.localeCompare(a.transaction_date));
+  }, [transactions, typeFilter, categoryFilter, searchQuery, categoryMap]);
+
+  const quickFilteredCategories = useMemo(
+    () => categories.filter((c) => c.type === quickType),
+    [categories, quickType]
+  );
+
+  const expenseCategories = useMemo(
+    () => categories.filter((c) => c.type === "expense"),
+    [categories]
+  );
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-slate-950 text-slate-100">
-      {/* Sidebar / Mobile Bars */}
-      <Navbar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        selectedMonth={selectedMonth}
-        setSelectedMonth={setSelectedMonth}
-        onOpenAddModal={() => {
-          setEditingTx(null);
-          setIsTxModalOpen(true);
-        }}
-        onOpenAuthModal={() => setIsAuthModalOpen(true)}
-        userEmail={userEmail}
-        isDemoMode={isDemoMode}
-        onSignOut={handleSignOut}
-        alertCount={alertCount}
-      />
+    <div className="relative min-h-screen pb-10">
+      {/* Animated Matrix Code Rain Canvas */}
+      <MatrixRainBackground />
 
-      {/* Main Content Area */}
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8 max-w-7xl w-full mx-auto">
-        {/* Top Status Bar */}
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 bg-slate-900/90 border border-slate-800 rounded-2xl px-4 py-3">
-          <div className="flex items-center gap-2.5 text-xs">
+      {/* Main 1-Page Container optimized for iPhone (Desktop/Mobile viewport) & Desktop */}
+      <div className="relative z-10 max-w-[1440px] mx-auto px-2.5 sm:px-5 pt-3 space-y-4">
+        {/* ==================== TOP MATRIX HUD COMMAND BAR ==================== */}
+        <header className="matrix-card-intense rounded-2xl px-3.5 py-3 flex flex-wrap items-center justify-between gap-2.5">
+          {/* Brand Title */}
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-xl bg-[#00ff41]/20 border border-[#00ff41] flex items-center justify-center shadow-[0_0_20px_#00ff41]">
+              <Terminal className="w-5 h-5 text-[#00ff41] drop-shadow-[0_0_8px_#00ff41]" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-sm sm:text-lg font-black tracking-wider matrix-text-glow-lg">
+                  MATRIX // FINANCE_OS
+                </h1>
+                <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#00ff41]/20 text-[#00ff41] border border-[#00ff41]/60 shadow-[0_0_12px_rgba(0,255,65,0.5)]">
+                  1-PAGE HUD
+                </span>
+              </div>
+              <p className="text-[11px] text-[#80ff9e]/80">
+                ระบบบัญชาการการเงินส่วนบุคคล • {formatThaiMonthYear(selectedMonth)}
+              </p>
+            </div>
+          </div>
+
+          {/* Controls: Month Picker + Cloud Status + Modal Trigger */}
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Month Selector */}
+            <div className="flex items-center gap-1.5 matrix-input px-2.5 py-1.5 rounded-xl">
+              <Calendar className="w-3.5 h-3.5 text-[#00ff41] drop-shadow-[0_0_6px_#00ff41]" />
+              <input
+                type="month"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                className="bg-transparent text-xs font-extrabold text-[#e2ffe9] focus:outline-none"
+              />
+            </div>
+
+            {/* Cloud / Demo Status Button */}
             {isDemoMode ? (
-              <>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 font-semibold">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Demo Mode (ข้อมูลตัวอย่างพร้อมทดสอบ)
-                </span>
-                <span className="text-slate-400 hidden sm:inline">
-                  คุณสามารถเพิ่ม/ลบรายการ หรือล็อกอินเพื่อซิงค์กับฐานข้อมูล Supabase จริงได้ทันที
-                </span>
-              </>
+              <button
+                onClick={() => setIsAuthModalOpen(true)}
+                className="matrix-btn-outline px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-[#00ff41]" />
+                <span className="hidden sm:inline">SIMULATION_MODE</span>
+                <LogIn className="w-3.5 h-3.5" />
+              </button>
             ) : (
-              <>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold">
-                  <Cloud className="w-3.5 h-3.5" />
-                  Supabase Cloud Sync ({userEmail})
+              <div className="flex items-center gap-1.5">
+                <span className="px-2.5 py-1.5 rounded-xl bg-[#00ff41]/15 border border-[#00ff41]/60 text-[11px] font-bold text-[#00ff41] shadow-[0_0_12px_rgba(0,255,65,0.35)] flex items-center gap-1.5 max-w-[160px] truncate">
+                  <Cloud className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">{userEmail}</span>
                 </span>
                 {transactions.length === 0 && (
                   <button
                     onClick={handleSeedCloudSampleData}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 font-medium transition-colors cursor-pointer"
+                    className="matrix-btn-outline px-2.5 py-1.5 rounded-xl text-[11px] font-bold flex items-center gap-1 cursor-pointer"
+                    title="นำเข้าข้อมูลตัวอย่างเข้า Cloud"
                   >
                     <Database className="w-3.5 h-3.5" />
-                    <span>นำเข้าข้อมูลตัวอย่างเข้าบัญชีนี้</span>
+                    <span>SEED</span>
                   </button>
                 )}
-              </>
+                <button
+                  onClick={handleSignOut}
+                  title="ออกจากระบบ"
+                  className="p-1.5 rounded-xl bg-[#ff0055]/15 border border-[#ff0055]/50 text-[#ff2a6d] hover:bg-[#ff0055]/30 cursor-pointer"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
+              </div>
             )}
-          </div>
 
-          <div className="flex items-center gap-2">
+            {/* Refresh */}
             <button
               onClick={loadFinanceData}
               title="รีเฟรชข้อมูล"
-              className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors cursor-pointer"
+              className="p-2 rounded-xl matrix-btn-outline cursor-pointer"
             >
-              <RefreshCw className={`w-4 h-4 ${loadingData ? "animate-spin" : ""}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${loadingData ? "animate-spin" : ""}`} />
+            </button>
+
+            {/* Open Full Modal Add */}
+            <button
+              onClick={() => {
+                setEditingTx(null);
+                setIsTxModalOpen(true);
+              }}
+              className="matrix-btn-glow px-3.5 py-1.5 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer"
+            >
+              <Plus className="w-4 h-4 stroke-[3]" />
+              <span>+ จดรายการ</span>
             </button>
           </div>
-        </div>
+        </header>
 
-        {/* Active View */}
-        {activeTab === "dashboard" && (
-          <DashboardView
-            selectedMonth={selectedMonth}
-            transactions={transactions}
-            categories={categories}
-            budgets={budgets}
-            onOpenAddModal={() => {
-              setEditingTx(null);
-              setIsTxModalOpen(true);
-            }}
-            onGoToBudgets={() => setActiveTab("budgets")}
-            onGoToTransactions={() => setActiveTab("transactions")}
-          />
-        )}
+        {/* ==================== ROW 1: 4 NEON MATRIX KPI PODS ==================== */}
+        <section className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {/* Pod 1: Income */}
+          <div className="matrix-card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#80ff9e]/80">
+                INFLOW // รายรับรวม
+              </span>
+              <div className="w-8 h-8 rounded-lg bg-[#00ff41]/20 border border-[#00ff41]/60 flex items-center justify-center text-[#00ff41] shadow-[0_0_14px_#00ff41]">
+                <TrendingUp className="w-4 h-4" />
+              </div>
+            </div>
+            <div className="text-lg sm:text-2xl font-black matrix-text-glow-lg truncate">
+              +{formatCurrency(totalIncome)}
+            </div>
+            <div className="mt-1 text-[11px] text-[#00ff41] font-semibold">
+              {transactions.filter((t) => t.type === "income").length} รายการรับในระบบ
+            </div>
+          </div>
 
-        {activeTab === "transactions" && (
-          <TransactionList
-            selectedMonth={selectedMonth}
-            transactions={transactions}
-            categories={categories}
-            onOpenAddModal={() => {
-              setEditingTx(null);
-              setIsTxModalOpen(true);
-            }}
-            onEditTransaction={(tx) => {
-              setEditingTx(tx);
-              setIsTxModalOpen(true);
-            }}
-            onDeleteTransaction={handleDeleteTransaction}
-          />
-        )}
+          {/* Pod 2: Expense */}
+          <div className="matrix-card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#80ff9e]/80">
+                OUTFLOW // รายจ่ายรวม
+              </span>
+              <div className="w-8 h-8 rounded-lg bg-[#ff0055]/20 border border-[#ff0055]/70 flex items-center justify-center text-[#ff2a6d] shadow-[0_0_14px_#ff0055]">
+                <TrendingDown className="w-4 h-4" />
+              </div>
+            </div>
+            <div className="text-lg sm:text-2xl font-black matrix-text-danger-glow truncate">
+              -{formatCurrency(totalExpense)}
+            </div>
+            <div className="mt-1 text-[11px] text-[#ff80ab] font-semibold">
+              {transactions.filter((t) => t.type === "expense").length} รายการจ่ายในระบบ
+            </div>
+          </div>
 
-        {activeTab === "budgets" && (
-          <BudgetManager
-            selectedMonth={selectedMonth}
-            budgets={budgets}
-            categories={categories}
-            transactions={transactions}
-            onSaveBudget={handleSaveBudget}
-            onDeleteBudget={handleDeleteBudget}
-          />
-        )}
-      </main>
+          {/* Pod 3: Net Cashflow */}
+          <div className="matrix-card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#80ff9e]/80">
+                NET_PULSE // คงเหลือสุทธิ
+              </span>
+              <div className="w-8 h-8 rounded-lg bg-[#00ffd5]/20 border border-[#00ffd5]/70 flex items-center justify-center text-[#00ffd5] shadow-[0_0_14px_#00ffd5]">
+                <Wallet className="w-4 h-4" />
+              </div>
+            </div>
+            <div
+              className={`text-lg sm:text-2xl font-black truncate ${
+                netBalance >= 0 ? "matrix-text-cyan-glow" : "matrix-text-danger-glow"
+              }`}
+            >
+              {netBalance >= 0 ? "+" : ""}
+              {formatCurrency(netBalance)}
+            </div>
+            <div className="mt-1 text-[11px] text-[#80ff9e]/80 font-semibold">
+              {netBalance >= 0 ? "STATUS: POSITIVE_FLOW" : "STATUS: DEFICIT_ALERT"}
+            </div>
+          </div>
+
+          {/* Pod 4: Savings Rate */}
+          <div className="matrix-card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#80ff9e]/80">
+                RESERVE // อัตราการออม
+              </span>
+              <div className="w-8 h-8 rounded-lg bg-[#39ff14]/20 border border-[#39ff14]/70 flex items-center justify-center text-[#39ff14] shadow-[0_0_14px_#39ff14]">
+                <PiggyBank className="w-4 h-4" />
+              </div>
+            </div>
+            <div className="text-lg sm:text-2xl font-black matrix-text-glow-lg">
+              {savingsRate.toFixed(1)}%
+            </div>
+            <div className="mt-1 text-[11px] text-[#00ff41] font-semibold">
+              {savingsRate >= 20 ? "OPTIMAL (≥ 20% TARGET)" : "RECOMMENDED: ≥ 20%"}
+            </div>
+          </div>
+        </section>
+
+        {/* ==================== ROW 2: INLINE 1-PAGE QUICK TERMINAL + ALERTS ==================== */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-3">
+          {/* Quick-Add Inline Command Bar */}
+          <form
+            onSubmit={handleQuickAddSubmit}
+            className={`${
+              budgetAlerts.length > 0 ? "lg:col-span-7" : "lg:col-span-12"
+            } matrix-card-intense rounded-2xl p-3.5 sm:p-4`}
+          >
+            <div className="flex items-center justify-between mb-2.5">
+              <div className="flex items-center gap-2">
+                <Zap className="w-4 h-4 text-[#00ff41] drop-shadow-[0_0_8px_#00ff41]" />
+                <span className="text-xs font-black tracking-wider matrix-text-glow">
+                  QUICK_INJECT // บันทึกรายการด่วนในหน้าเดียว
+                </span>
+              </div>
+              <div className="flex items-center gap-1 bg-black/80 border border-[#00ff41]/40 rounded-lg p-0.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuickType("expense");
+                    const firstExp = categories.find((c) => c.type === "expense");
+                    if (firstExp) setQuickCategoryId(firstExp.id);
+                  }}
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-extrabold transition-all cursor-pointer ${
+                    quickType === "expense"
+                      ? "bg-[#ff0055] text-white shadow-[0_0_12px_#ff0055]"
+                      : "text-[#80ff9e]/70 hover:text-white"
+                  }`}
+                >
+                  รายจ่าย
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuickType("income");
+                    const firstInc = categories.find((c) => c.type === "income");
+                    if (firstInc) setQuickCategoryId(firstInc.id);
+                  }}
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-extrabold transition-all cursor-pointer ${
+                    quickType === "income"
+                      ? "bg-[#00ff41] text-black shadow-[0_0_12px_#00ff41]"
+                      : "text-[#80ff9e]/70 hover:text-white"
+                  }`}
+                >
+                  รายรับ
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-12 gap-2">
+              <div className="col-span-1 sm:col-span-3">
+                <select
+                  value={quickCategoryId}
+                  onChange={(e) => setQuickCategoryId(Number(e.target.value))}
+                  className="w-full px-2.5 py-2 matrix-input rounded-xl text-xs font-bold"
+                >
+                  {quickFilteredCategories.map((c) => (
+                    <option key={c.id} value={c.id} className="bg-[#010802] text-[#00ff41]">
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="col-span-1 sm:col-span-2">
+                <input
+                  type="number"
+                  step="any"
+                  min="0.01"
+                  required
+                  value={quickAmount}
+                  onChange={(e) => setQuickAmount(e.target.value)}
+                  placeholder="จำนวนเงิน (฿)"
+                  className="w-full px-2.5 py-2 matrix-input rounded-xl text-xs font-extrabold"
+                />
+              </div>
+
+              <div className="col-span-1 sm:col-span-3">
+                <input
+                  type="text"
+                  value={quickNote}
+                  onChange={(e) => setQuickNote(e.target.value)}
+                  placeholder="บันทึกช่วยจำ..."
+                  className="w-full px-2.5 py-2 matrix-input rounded-xl text-xs"
+                />
+              </div>
+
+              <div className="col-span-1 sm:col-span-2">
+                <input
+                  type="date"
+                  required
+                  value={quickDate}
+                  onChange={(e) => setQuickDate(e.target.value)}
+                  className="w-full px-2 py-2 matrix-input rounded-xl text-xs"
+                />
+              </div>
+
+              <div className="col-span-2 sm:col-span-2">
+                <button
+                  type="submit"
+                  disabled={quickSaving}
+                  className="w-full h-full py-2 px-3 rounded-xl matrix-btn-glow text-xs flex items-center justify-center gap-1 cursor-pointer"
+                >
+                  <Plus className="w-4 h-4 stroke-[3]" />
+                  <span>บันทึก</span>
+                </button>
+              </div>
+            </div>
+          </form>
+
+          {/* Active Budget Alert Strip */}
+          {budgetAlerts.length > 0 && (
+            <div className="lg:col-span-5 matrix-card-warning rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-[#ffc400] drop-shadow-[0_0_8px_#ffc400]" />
+                  <span className="text-xs font-black matrix-text-warning-glow">
+                    WARNING // แจ้งเตือนงบประมาณ ({budgetAlerts.length} หมวดหมู่)
+                  </span>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {budgetAlerts.slice(0, 2).map((alert) => (
+                  <div
+                    key={alert.id}
+                    className={`px-3 py-2 rounded-xl border ${
+                      alert.status === "over"
+                        ? "bg-[#ff0055]/15 border-[#ff0055] shadow-[0_0_12px_rgba(255,0,85,0.4)]"
+                        : "bg-[#ffc400]/10 border-[#ffc400]/70 shadow-[0_0_12px_rgba(255,196,0,0.3)]"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between text-[11px] font-bold">
+                      <span className="text-white truncate">{alert.cat?.name}</span>
+                      <span
+                        className={
+                          alert.status === "over"
+                            ? "matrix-text-danger-glow"
+                            : "matrix-text-warning-glow"
+                        }
+                      >
+                        {alert.pct.toFixed(0)}%
+                      </span>
+                    </div>
+                    <div className="text-[10px] text-[#e2ffe9]/80 mt-0.5">
+                      {formatCurrency(alert.spent)} / {formatCurrency(alert.limit)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* ==================== ROW 3: ANALYTICS CHARTS HUD (SIDE-BY-SIDE) ==================== */}
+        <section className="grid grid-cols-1 md:grid-cols-12 gap-3.5">
+          {/* Left Chart: Daily Cashflow */}
+          <div className="md:col-span-7 matrix-card rounded-2xl p-4 flex flex-col">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider matrix-text-glow">
+                  CASHFLOW_MATRIX // แนวโน้มรายรับ-รายจ่ายรายวัน
+                </h2>
+                <p className="text-[11px] text-[#80ff9e]/70">
+                  เปรียบเทียบกระแสเงินสดเข้า (#00FF41) และออก (#FF0055) รายวัน
+                </p>
+              </div>
+            </div>
+
+            {dailyChartData.length === 0 ? (
+              <div className="h-[220px] flex items-center justify-center text-xs text-[#80ff9e]/50">
+                NO_SIGNAL // ยังไม่มีข้อมูลธุรกรรมในเดือนนี้
+              </div>
+            ) : (
+              <div className="h-[220px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={dailyChartData}
+                    margin={{ top: 8, right: 8, left: -12, bottom: 0 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 255, 65, 0.15)" />
+                    <XAxis dataKey="day" stroke="#80ff9e" fontSize={11} />
+                    <YAxis
+                      stroke="#80ff9e"
+                      fontSize={11}
+                      tickFormatter={(v) => `฿${(v / 1000).toFixed(0)}k`}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "rgba(1, 12, 4, 0.95)",
+                        borderColor: "#00ff41",
+                        borderRadius: "12px",
+                        boxShadow: "0 0 20px rgba(0, 255, 65, 0.5)",
+                        color: "#e2ffe9",
+                        fontSize: "12px",
+                      }}
+                      formatter={(value: number) => [formatCurrency(value), ""]}
+                    />
+                    <Legend wrapperStyle={{ fontSize: "11px" }} />
+                    <Bar dataKey="รายรับ" fill="#00ff41" radius={[5, 5, 0, 0]} />
+                    <Bar dataKey="รายจ่าย" fill="#ff0055" radius={[5, 5, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </div>
+
+          {/* Right Chart: Category Donut + Breakdown */}
+          <div className="md:col-span-5 matrix-card rounded-2xl p-4 flex flex-col">
+            <div className="mb-2">
+              <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider matrix-text-glow">
+                SECTOR_BREAKDOWN // สัดส่วนค่าใช้จ่ายตามหมวดหมู่
+              </h2>
+              <p className="text-[11px] text-[#80ff9e]/70">
+                วิเคราะห์หมวดหมู่ที่ใช้จ่ายสูงสุดในเดือนนี้
+              </p>
+            </div>
+
+            {categoryBreakdown.length === 0 ? (
+              <div className="h-[220px] flex items-center justify-center text-xs text-[#80ff9e]/50">
+                NO_EXPENSE_DATA // ยังไม่มีรายจ่ายในเดือนนี้
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center flex-1">
+                <div className="sm:col-span-6 h-[185px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={categoryBreakdown}
+                        dataKey="amount"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={42}
+                        outerRadius={70}
+                        paddingAngle={3}
+                        stroke="rgba(0,255,65,0.4)"
+                      >
+                        {categoryBreakdown.map((entry) => (
+                          <Cell key={entry.categoryId} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "rgba(1, 12, 4, 0.95)",
+                          borderColor: "#00ff41",
+                          borderRadius: "12px",
+                          boxShadow: "0 0 18px rgba(0, 255, 65, 0.5)",
+                          color: "#e2ffe9",
+                          fontSize: "12px",
+                        }}
+                        formatter={(value: number) => formatCurrency(value)}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+
+                <div className="sm:col-span-6 space-y-2 max-h-[185px] overflow-y-auto pr-1">
+                  {categoryBreakdown.map((item) => (
+                    <div
+                      key={item.categoryId}
+                      className="flex items-center justify-between text-[11px] bg-black/50 border border-[#00ff41]/25 px-2.5 py-1.5 rounded-lg"
+                    >
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span
+                          className="w-2.5 h-2.5 rounded-full shrink-0"
+                          style={{
+                            backgroundColor: item.color,
+                            boxShadow: `0 0 8px ${item.color}`,
+                          }}
+                        />
+                        <span className="text-[#e2ffe9] font-bold truncate">
+                          {item.name}
+                        </span>
+                      </div>
+                      <div className="text-right shrink-0 ml-2">
+                        <span className="text-[#00ff41] font-extrabold">
+                          {item.percentage.toFixed(0)}%
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* ==================== ROW 4: 1-PAGE BUDGET MATRIX + TRANSACTION STREAM ==================== */}
+        <section className="grid grid-cols-1 md:grid-cols-12 gap-3.5">
+          {/* LEFT PANEL (5 COLS): BUDGET MATRIX & ALERTS */}
+          <div className="md:col-span-5 matrix-card rounded-2xl p-4 flex flex-col space-y-3.5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Target className="w-4 h-4 text-[#00ff41] drop-shadow-[0_0_8px_#00ff41]" />
+                <div>
+                  <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider matrix-text-glow">
+                    BUDGET_SHIELD // ตั้งงบ & แจ้งเตือน
+                  </h2>
+                  <p className="text-[11px] text-[#80ff9e]/70">
+                    ตั้งเพดานรายจ่ายและเกณฑ์เตือน (%) รายหมวดหมู่
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Inline Budget Setter Form */}
+            <form
+              onSubmit={handleSaveBudget}
+              className="bg-black/70 border border-[#00ff41]/35 rounded-xl p-3 space-y-2.5 shadow-[inset_0_0_15px_rgba(0,255,65,0.08)]"
+            >
+              <div className="grid grid-cols-12 gap-2">
+                <div className="col-span-12 sm:col-span-5">
+                  <label className="block text-[10px] font-bold text-[#80ff9e] mb-1">
+                    หมวดหมู่รายจ่าย
+                  </label>
+                  <select
+                    value={budgetCatId}
+                    onChange={(e) => setBudgetCatId(Number(e.target.value))}
+                    className="w-full px-2.5 py-1.5 matrix-input rounded-lg text-xs font-bold"
+                  >
+                    {expenseCategories.map((c) => (
+                      <option key={c.id} value={c.id} className="bg-[#010802] text-[#00ff41]">
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="col-span-6 sm:col-span-4">
+                  <label className="block text-[10px] font-bold text-[#80ff9e] mb-1">
+                    วงเงินงบ (฿)
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    required
+                    value={budgetLimit}
+                    onChange={(e) => setBudgetLimit(e.target.value)}
+                    className="w-full px-2.5 py-1.5 matrix-input rounded-lg text-xs font-bold"
+                  />
+                </div>
+
+                <div className="col-span-6 sm:col-span-3">
+                  <label className="block text-[10px] font-bold text-[#80ff9e] mb-1">
+                    เตือนที่ (%)
+                  </label>
+                  <input
+                    type="number"
+                    min="10"
+                    max="100"
+                    required
+                    value={budgetThreshold}
+                    onChange={(e) => setBudgetThreshold(e.target.value)}
+                    className="w-full px-2 py-1.5 matrix-input rounded-lg text-xs font-bold"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={budgetSaving}
+                className="w-full py-2 rounded-lg matrix-btn-glow text-xs flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5 stroke-[3]" />
+                <span>ตั้งค่า / อัปเดตงบประมาณหมวดหมู่นี้</span>
+              </button>
+            </form>
+
+            {/* Budget Progress List */}
+            <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
+              {enrichedBudgets.length === 0 ? (
+                <div className="py-10 text-center text-xs text-[#80ff9e]/50">
+                  ยังไม่ได้ตั้งงบในเดือนนี้
+                </div>
+              ) : (
+                enrichedBudgets.map((item) => {
+                  const barClass =
+                    item.status === "over"
+                      ? "matrix-bar-danger"
+                      : item.status === "warning"
+                      ? "matrix-bar-warning"
+                      : "matrix-bar-green";
+
+                  return (
+                    <div
+                      key={item.id}
+                      className={`p-3 rounded-xl border transition-all ${
+                        item.status === "over"
+                          ? "matrix-card-danger"
+                          : item.status === "warning"
+                          ? "matrix-card-warning"
+                          : "bg-black/65 border-[#00ff41]/35 shadow-[0_0_12px_rgba(0,255,65,0.15)]"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div
+                            className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                            style={{
+                              backgroundColor: `${item.cat?.color || "#00ff41"}25`,
+                              color: item.cat?.color || "#00ff41",
+                              boxShadow: `0 0 10px ${item.cat?.color || "#00ff41"}55`,
+                            }}
+                          >
+                            <CategoryIcon name={item.cat?.icon || "Wallet"} className="w-4 h-4" />
+                          </div>
+                          <span className="text-xs font-extrabold text-white truncate">
+                            {item.cat?.name}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {item.status === "over" && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#ff0055]/30 text-[#ff5c8d] border border-[#ff0055]">
+                              เกินงบ! {item.pct.toFixed(0)}%
+                            </span>
+                          )}
+                          {item.status === "warning" && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#ffc400]/25 text-[#ffe57f] border border-[#ffc400]">
+                              ใกล้เต็ม {item.pct.toFixed(0)}%
+                            </span>
+                          )}
+                          {item.status === "normal" && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#00ff41]/20 text-[#00ff41] border border-[#00ff41]/50 flex items-center gap-1">
+                              <CheckCircle2 className="w-3 h-3" /> {item.pct.toFixed(0)}%
+                            </span>
+                          )}
+                          <button
+                            onClick={() => handleDeleteBudget(item.id)}
+                            title="ลบงบประมาณ"
+                            className="p-1 text-[#80ff9e]/50 hover:text-[#ff2a6d] cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="w-full h-2 bg-black/90 rounded-full overflow-hidden border border-[#00ff41]/20 mb-1.5">
+                        <div
+                          className={`h-full rounded-full ${barClass}`}
+                          style={{ width: `${Math.min(100, item.pct)}%` }}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="text-[#b9ffce]">
+                          ใช้จริง <strong>{formatCurrency(item.spent)}</strong> /{" "}
+                          {formatCurrency(item.limit)}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setBudgetCatId(item.category_id);
+                            setBudgetLimit(String(item.limit));
+                            setBudgetThreshold(String(item.alert_threshold));
+                          }}
+                          className="text-[#00ff41] hover:underline font-bold cursor-pointer"
+                        >
+                          แก้ไขงบ
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+
+          {/* RIGHT PANEL (7 COLS): LIVE TRANSACTION STREAM */}
+          <div className="md:col-span-7 matrix-card rounded-2xl p-4 flex flex-col space-y-3.5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider matrix-text-glow">
+                  TRANSACTION_STREAM // รายการรับ-จ่าย ({filteredTransactions.length} รายการ)
+                </h2>
+                <p className="text-[11px] text-[#80ff9e]/70">
+                  ค้นหา กรองหมวดหมู่ แก้ไข หรือลบรายการได้ทันทีจากหน้าเดียว
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setEditingTx(null);
+                  setIsTxModalOpen(true);
+                }}
+                className="matrix-btn-outline px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1 cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>เปิดฟอร์มเต็ม</span>
+              </button>
+            </div>
+
+            {/* Filter Bar */}
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-2">
+              <div className="sm:col-span-5 relative">
+                <Search className="w-3.5 h-3.5 text-[#00ff41] absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="ค้นหาบันทึก หรือหมวดหมู่..."
+                  className="w-full pl-8 pr-3 py-1.5 matrix-input rounded-xl text-xs"
+                />
+              </div>
+
+              <div className="sm:col-span-4 flex items-center gap-1 bg-black/80 border border-[#00ff41]/35 rounded-xl p-1">
+                {(
+                  [
+                    { id: "all", label: "ทั้งหมด" },
+                    { id: "income", label: "รายรับ" },
+                    { id: "expense", label: "รายจ่าย" },
+                  ] as const
+                ).map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setTypeFilter(tab.id)}
+                    className={`flex-1 py-1 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer ${
+                      typeFilter === tab.id
+                        ? "bg-[#00ff41] text-black shadow-[0_0_12px_#00ff41]"
+                        : "text-[#80ff9e]/70 hover:text-[#00ff41]"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="sm:col-span-3">
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="w-full px-2.5 py-1.5 matrix-input rounded-xl text-xs font-bold"
+                >
+                  <option value="all" className="bg-[#010802] text-[#00ff41]">
+                    ทุกหมวดหมู่
+                  </option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={String(c.id)} className="bg-[#010802] text-[#00ff41]">
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Scrollable Transaction Feed */}
+            <div className="space-y-2 max-h-[455px] overflow-y-auto pr-1">
+              {filteredTransactions.length === 0 ? (
+                <div className="py-12 text-center text-xs text-[#80ff9e]/50">
+                  ไม่พบรายการธุรกรรมที่ตรงกับเงื่อนไข
+                </div>
+              ) : (
+                filteredTransactions.map((tx) => {
+                  const cat = tx.category_id ? categoryMap.get(tx.category_id) : undefined;
+                  return (
+                    <div
+                      key={tx.id}
+                      className="p-3 rounded-xl bg-black/65 border border-[#00ff41]/30 hover:border-[#00ff41] hover:shadow-[0_0_18px_rgba(0,255,65,0.35)] transition-all flex items-center justify-between gap-2.5"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div
+                          className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                          style={{
+                            backgroundColor: `${cat?.color || "#00ff41"}22`,
+                            color: cat?.color || "#00ff41",
+                            boxShadow: `0 0 12px ${cat?.color || "#00ff41"}66`,
+                          }}
+                        >
+                          <CategoryIcon name={cat?.icon || "Wallet"} className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs sm:text-sm font-extrabold text-white truncate">
+                            {tx.note || cat?.name || "รายการทั่วไป"}
+                          </p>
+                          <p className="text-[11px] text-[#80ff9e]/75 truncate">
+                            {cat?.name || "ไม่ระบุ"} • {tx.transaction_date}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span
+                          className={`text-xs sm:text-sm font-black ${
+                            tx.type === "income"
+                              ? "matrix-text-glow"
+                              : "matrix-text-danger-glow"
+                          }`}
+                        >
+                          {tx.type === "income" ? "+" : "-"}
+                          {formatCurrency(Number(tx.amount))}
+                        </span>
+
+                        <button
+                          onClick={() => {
+                            setEditingTx(tx);
+                            setIsTxModalOpen(true);
+                          }}
+                          title="แก้ไข"
+                          className="p-1.5 rounded-lg bg-[#00ff41]/10 hover:bg-[#00ff41]/25 text-[#00ff41] border border-[#00ff41]/40 cursor-pointer"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteTransaction(tx.id)}
+                          title="ลบ"
+                          className="p-1.5 rounded-lg bg-[#ff0055]/10 hover:bg-[#ff0055]/30 text-[#ff2a6d] border border-[#ff0055]/40 cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </section>
+      </div>
 
       {/* Modals */}
       <TransactionModal
@@ -476,7 +1398,7 @@ export default function SmartFinancePage() {
           setEditingTx(null);
         }}
         categories={categories}
-        defaultDate={defaultDateForModal}
+        defaultDate={quickDate}
         editingTransaction={editingTx}
         onSave={handleSaveTransaction}
       />

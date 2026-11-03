@@ -1,10 +1,16 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Smart Personal Finance | แอปวางแผนการเงินส่วนบุคคลอัจฉริยะ",
+  title: "MATRIX FINANCE OS // Smart Personal Finance",
   description:
-    "บันทึกรายรับ-รายจ่าย ตั้งงบประมาณรายเดือนพร้อมระบบแจ้งเตือน และวิเคราะห์สุขภาพทางการเงินด้วย Dashboard อัจฉริยะ (Next.js + Supabase)",
+    "1-Page Cyber-Matrix Personal Finance Command Center — บันทึกรายรับ-รายจ่าย ตั้งงบประมาณพร้อมแจ้งเตือน และวิเคราะห์สุขภาพการเงิน (Next.js + Supabase)",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#010802",
 };
 
 export default function RootLayout({
@@ -14,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="th" className="dark">
-      <body className="antialiased bg-slate-950 text-slate-100 min-h-screen">
+      <body className="antialiased matrix-bg matrix-scanlines text-[#d4ffe0] min-h-screen selection:bg-[#00ff41] selection:text-black">
         {children}
       </body>
     </html>
