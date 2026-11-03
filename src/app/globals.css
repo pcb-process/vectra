@@ -14,7 +14,7 @@ body {
   color: #d4ffe0;
   font-family: "JetBrains Mono", "Courier New", ui-monospace, system-ui, -apple-system,
     "Noto Sans Thai", sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Matrix Grid + Subtle Radial Glow Background */

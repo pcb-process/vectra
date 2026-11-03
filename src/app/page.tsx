@@ -540,7 +540,7 @@ export default function SmartFinanceOnePageApp() {
   );
 
   return (
-    <div className="relative min-h-screen pb-8 overflow-x-hidden">
+    <div className="relative min-h-screen pb-8">
       <MatrixRainBackground />
 
       {/* Minimal 1-Page Container */}
