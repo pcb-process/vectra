@@ -545,149 +545,173 @@ export default function SmartFinanceOnePageApp() {
 
       {/* Minimal 1-Page Container */}
       <div className="relative z-10 max-w-6xl mx-auto px-3 sm:px-5 pt-3 space-y-3.5">
-        {/* ==================== MINIMAL RESPONSIVE STICKY HEADER ==================== */}
-        <header className="sticky top-2 z-30 matrix-card bg-[#021206]/95 backdrop-blur-md p-2.5 sm:px-4 sm:py-3 space-y-2 sm:space-y-0 sm:flex sm:items-center sm:justify-between gap-3 shadow-[0_6px_20px_rgba(0,0,0,0.85)]">
-          {/* Top Row on Mobile: Brand + Utility Icons (Auth & Refresh) */}
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-3 min-w-0">
-              <BrandLogo size="md" />
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <h1 className="text-base sm:text-lg font-black tracking-[0.16em] matrix-text-glow-lg truncate">
-                    VECTRA
-                  </h1>
-                  <span className="px-1.5 py-0.5 text-[9px] font-extrabold tracking-widest uppercase bg-[#00ffd5]/15 text-[#00ffd5] border border-[#00ffd5]/50 shrink-0">
-                    FINANCE
-                  </span>
-                </div>
-                <p className="text-[11px] text-[#80ff9e]/75 truncate">
-                  พอร์ตการเงินส่วนบุคคล • {formatThaiMonthYear(selectedMonth)}
-                </p>
+        {/* ==================== BRAND HEADER (MOBILE TOP / DESKTOP UNIFIED STICKY) ==================== */}
+        <header className="sm:sticky sm:top-2 sm:z-30 matrix-card bg-[#021206]/95 backdrop-blur-md p-3 sm:px-4 sm:py-3 flex items-center justify-between gap-3 sm:shadow-[0_6px_20px_rgba(0,0,0,0.85)]">
+          {/* Brand Logo & Title */}
+          <div className="flex items-center gap-3 min-w-0">
+            <BrandLogo size="md" />
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <h1 className="text-base sm:text-lg font-black tracking-[0.16em] matrix-text-glow-lg truncate">
+                  VECTRA
+                </h1>
+                <span className="px-1.5 py-0.5 text-[9px] font-extrabold tracking-widest uppercase bg-[#00ffd5]/15 text-[#00ffd5] border border-[#00ffd5]/50 shrink-0">
+                  FINANCE
+                </span>
               </div>
-            </div>
-
-            {/* Mobile-only Auth & Refresh utility buttons */}
-            <div className="flex sm:hidden items-center gap-1.5 shrink-0">
-              {isDemoMode ? (
-                <button
-                  onClick={() => setIsAuthModalOpen(true)}
-                  className="matrix-btn-outline h-9 px-2.5 text-xs font-bold flex items-center gap-1 cursor-pointer"
-                  title="เข้าสู่ระบบ Cloud"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-[#00ff41]" />
-                  <span>Login</span>
-                </button>
-              ) : (
-                <>
-                  {transactions.length === 0 && (
-                    <button
-                      onClick={handleSeedCloudSampleData}
-                      className="matrix-btn-outline w-9 h-9 flex items-center justify-center cursor-pointer"
-                      title="นำเข้าข้อมูลตัวอย่าง"
-                    >
-                      <Database className="w-4 h-4" />
-                    </button>
-                  )}
-                  <button
-                    onClick={handleSignOut}
-                    title="ออกจากระบบ"
-                    className="w-9 h-9 bg-[#ff0055]/15 border border-[#ff0055]/50 text-[#ff2a6d] flex items-center justify-center cursor-pointer"
-                  >
-                    <LogOut className="w-4 h-4" />
-                  </button>
-                </>
-              )}
-
-              <button
-                onClick={loadFinanceData}
-                title="รีเฟรช"
-                className="w-9 h-9 matrix-btn-outline flex items-center justify-center cursor-pointer"
-              >
-                <RefreshCw className={`w-4 h-4 ${loadingData ? "animate-spin" : ""}`} />
-              </button>
+              <p className="text-[11px] text-[#80ff9e]/75 truncate">
+                พอร์ตการเงินส่วนบุคคล • {formatThaiMonthYear(selectedMonth)}
+              </p>
             </div>
           </div>
 
-          {/* Action Row: Month Selector + Primary Modal Triggers (Fits 100% cleanly on 375px mobile & desktop) */}
-          <div className="grid grid-cols-12 sm:flex items-center gap-2">
-            {/* Month Picker (No duplicate icon) */}
+          {/* Mobile-only Auth & Refresh utility buttons */}
+          <div className="flex sm:hidden items-center gap-1.5 shrink-0">
+            {isDemoMode ? (
+              <button
+                onClick={() => setIsAuthModalOpen(true)}
+                className="matrix-btn-outline h-9 px-2.5 text-xs font-bold flex items-center gap-1 cursor-pointer"
+                title="เข้าสู่ระบบ Cloud"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-[#00ff41]" />
+                <span>Login</span>
+              </button>
+            ) : (
+              <>
+                {transactions.length === 0 && (
+                  <button
+                    onClick={handleSeedCloudSampleData}
+                    className="matrix-btn-outline w-9 h-9 flex items-center justify-center cursor-pointer"
+                    title="นำเข้าข้อมูลตัวอย่าง"
+                  >
+                    <Database className="w-4 h-4" />
+                  </button>
+                )}
+                <button
+                  onClick={handleSignOut}
+                  title="ออกจากระบบ"
+                  className="w-9 h-9 bg-[#ff0055]/15 border border-[#ff0055]/50 text-[#ff2a6d] flex items-center justify-center cursor-pointer"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </>
+            )}
+
+            <button
+              onClick={loadFinanceData}
+              title="รีเฟรช"
+              className="w-9 h-9 matrix-btn-outline flex items-center justify-center cursor-pointer"
+            >
+              <RefreshCw className={`w-4 h-4 ${loadingData ? "animate-spin" : ""}`} />
+            </button>
+          </div>
+
+          {/* Desktop-only Action Toolbar (All in 1 row on sm+) */}
+          <div className="hidden sm:flex items-center gap-2 shrink-0">
             <input
               type="month"
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
-              className="col-span-5 sm:w-auto h-9 px-2.5 matrix-input text-xs font-bold text-[#e2ffe9] focus:outline-none"
+              className="h-9 px-2.5 matrix-input text-xs font-bold text-[#e2ffe9] focus:outline-none"
             />
 
-            {/* Desktop-only Auth & Refresh buttons */}
-            <div className="hidden sm:flex items-center gap-2">
-              {isDemoMode ? (
-                <button
-                  onClick={() => setIsAuthModalOpen(true)}
-                  className="matrix-btn-outline h-9 px-3 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-[#00ff41]" />
-                  <span>โหมดทดลอง</span>
-                  <LogIn className="w-3.5 h-3.5" />
-                </button>
-              ) : (
-                <div className="flex items-center gap-1.5">
-                  <span className="h-9 px-2.5 bg-[#00ff41]/10 border border-[#00ff41]/40 text-xs font-bold text-[#00ff41] flex items-center gap-1.5 max-w-[150px] truncate">
-                    <Cloud className="w-3.5 h-3.5 shrink-0" />
-                    <span className="truncate">{userEmail}</span>
-                  </span>
-                  {transactions.length === 0 && (
-                    <button
-                      onClick={handleSeedCloudSampleData}
-                      className="matrix-btn-outline h-9 px-2.5 text-xs font-bold flex items-center gap-1 cursor-pointer"
-                      title="นำเข้าข้อมูลตัวอย่าง"
-                    >
-                      <Database className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                  <button
-                    onClick={handleSignOut}
-                    title="ออกจากระบบ"
-                    className="w-9 h-9 bg-[#ff0055]/15 border border-[#ff0055]/50 text-[#ff2a6d] hover:bg-[#ff0055]/30 flex items-center justify-center cursor-pointer"
-                  >
-                    <LogOut className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
-
+            {isDemoMode ? (
               <button
-                onClick={loadFinanceData}
-                title="รีเฟรช"
-                className="w-9 h-9 matrix-btn-outline flex items-center justify-center cursor-pointer"
+                onClick={() => setIsAuthModalOpen(true)}
+                className="matrix-btn-outline h-9 px-3 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
               >
-                <RefreshCw className={`w-4 h-4 ${loadingData ? "animate-spin" : ""}`} />
+                <Sparkles className="w-3.5 h-3.5 text-[#00ff41]" />
+                <span>โหมดทดลอง</span>
+                <LogIn className="w-3.5 h-3.5" />
               </button>
-            </div>
+            ) : (
+              <div className="flex items-center gap-1.5">
+                <span className="h-9 px-2.5 bg-[#00ff41]/10 border border-[#00ff41]/40 text-xs font-bold text-[#00ff41] flex items-center gap-1.5 max-w-[150px] truncate">
+                  <Cloud className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">{userEmail}</span>
+                </span>
+                {transactions.length === 0 && (
+                  <button
+                    onClick={handleSeedCloudSampleData}
+                    className="matrix-btn-outline h-9 px-2.5 text-xs font-bold flex items-center gap-1 cursor-pointer"
+                    title="นำเข้าข้อมูลตัวอย่าง"
+                  >
+                    <Database className="w-3.5 h-3.5" />
+                  </button>
+                )}
+                <button
+                  onClick={handleSignOut}
+                  title="ออกจากระบบ"
+                  className="w-9 h-9 bg-[#ff0055]/15 border border-[#ff0055]/50 text-[#ff2a6d] hover:bg-[#ff0055]/30 flex items-center justify-center cursor-pointer"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            )}
 
-            {/* Modal Trigger: Set Budget */}
+            <button
+              onClick={loadFinanceData}
+              title="รีเฟรช"
+              className="w-9 h-9 matrix-btn-outline flex items-center justify-center cursor-pointer"
+            >
+              <RefreshCw className={`w-4 h-4 ${loadingData ? "animate-spin" : ""}`} />
+            </button>
+
             <button
               onClick={() => {
                 setEditingBudget({});
                 setIsBudgetModalOpen(true);
               }}
-              className="col-span-3 sm:w-auto h-9 px-2.5 sm:px-3 matrix-btn-outline text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+              className="h-9 px-3 matrix-btn-outline text-xs font-bold flex items-center gap-1.5 cursor-pointer"
             >
               <Target className="w-3.5 h-3.5 shrink-0" />
               <span>ตั้งงบ</span>
             </button>
 
-            {/* Modal Trigger: Add Transaction */}
             <button
               onClick={() => {
                 setEditingTx(null);
                 setIsTxModalOpen(true);
               }}
-              className="col-span-4 sm:w-auto h-9 px-2.5 sm:px-3.5 matrix-btn-glow text-xs flex items-center justify-center gap-1 cursor-pointer"
+              className="h-9 px-3.5 matrix-btn-glow text-xs flex items-center gap-1 cursor-pointer"
             >
               <Plus className="w-4 h-4 stroke-[2.5] shrink-0" />
-              <span className="truncate">จดรายการ</span>
+              <span>จดรายการ</span>
             </button>
           </div>
         </header>
+
+        {/* ==================== MOBILE-ONLY SLIM STICKY ACTION TOOLBAR ==================== */}
+        <div className="sm:hidden sticky top-2 z-30 matrix-card-intense bg-[#021206]/95 backdrop-blur-md p-2 grid grid-cols-12 items-center gap-2 shadow-[0_8px_24px_rgba(0,0,0,0.9)]">
+          <input
+            type="month"
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className="col-span-5 h-9 px-2 matrix-input text-xs font-bold text-[#e2ffe9] focus:outline-none min-w-0"
+          />
+
+          <button
+            onClick={() => {
+              setEditingBudget({});
+              setIsBudgetModalOpen(true);
+            }}
+            className="col-span-3 h-9 px-2 matrix-btn-outline text-xs font-bold flex items-center justify-center gap-1 cursor-pointer"
+          >
+            <Target className="w-3.5 h-3.5 shrink-0" />
+            <span>ตั้งงบ</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setEditingTx(null);
+              setIsTxModalOpen(true);
+            }}
+            className="col-span-4 h-9 px-2 matrix-btn-glow text-xs flex items-center justify-center gap-1 cursor-pointer"
+          >
+            <Plus className="w-4 h-4 stroke-[2.5] shrink-0" />
+            <span className="truncate">จดรายการ</span>
+          </button>
+        </div>
 
         {/* ==================== 4 MINIMAL KPI CARDS ==================== */}
         <section className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
